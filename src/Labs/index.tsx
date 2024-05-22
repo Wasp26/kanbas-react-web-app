@@ -10,14 +10,12 @@ export default function Labs() {
       <p>
         <b>First Name: </b>Sai Swapnil
       </p>
-      <br />
       <p>
         <b>Last Name: </b>Aremanda
       </p>
       <p>
-        <b>Term: </b>
+        <b>Term: </b>Summer 2024 (Full)
       </p>
-      Summer 2024 (Full)
       <TOC />
       <Routes>
         <Route path="/" element={<Navigate to="Lab1" />} />
