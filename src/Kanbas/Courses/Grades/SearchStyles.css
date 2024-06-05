@@ -1,0 +1,15 @@
+.search-wrapper {
+  position: relative;
+}
+
+.icon {
+  padding: 20px;
+  position: absolute;
+  top: 50%;
+  left: 2px;
+  transform: translateY(-50%);
+}
+
+.grades-table {
+  table-layout: fixed;
+}

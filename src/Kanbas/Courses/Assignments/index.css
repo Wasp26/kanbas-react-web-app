@@ -1,0 +1,13 @@
+.wd-asmnt {
+  border-left: 5px solid green !important;
+  border-bottom: 1px solid grey;
+  border-right: 1px solid grey;
+}
+
+.wd-asmnts-title {
+  border: 1px solid grey;
+}
+
+.wd-assignments {
+  list-style-type: none;
+}

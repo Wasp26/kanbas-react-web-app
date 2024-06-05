@@ -1,41 +1,60 @@
+import "./index.css";
 export default function CoursesNavigation() {
   return (
     <ul id="wd-courses-navigation">
-      <li>
-        <a id="wd-course-home-link" href="#/Kanbas/Courses/1234/Home">
-          Home
-        </a>
-      </li>
-      <li>
-        <a id="wd-course-modules-link" href="#/Kanbas/Courses/1234/Modules">
+      <div id="wd-courses-navigation" className="list-group fs-5 rounded-0">
+        <li>
+          <a
+            id="wd-course-home-link"
+            href="#/Kanbas/Courses/1234/Home"
+            className="list-group-item active border border-0"
+          >
+            Home
+          </a>
+        </li>
+        <a
+          id="wd-course-modules-link"
+          href="#/Kanbas/Courses/1234/Modules"
+          className="list-group-item text-danger border border-0"
+        >
           Modules
         </a>
-      </li>
-      <li>
-        <a id="wd-course-piazza-link" href="#/Kanbas/Courses/1234/Piazza">
+        <a
+          id="wd-course-piazza-link"
+          href="#/Kanbas/Courses/1234/Piazza"
+          className="list-group-item text-danger border border-0"
+        >
           Piazza
         </a>
-      </li>
-      <li>
-        <a id="wd-course-zoom-link" href="#/Kanbas/Courses/1234/Zoom">
+        <a
+          id="wd-course-zoom-link"
+          href="#/Kanbas/Courses/1234/Zoom"
+          className="list-group-item text-danger border border-0"
+        >
           Zoom
         </a>
-      </li>
-      <li>
-        <a id="wd-course-quizzes-link" href="#/Kanbas/Courses/1234/Assignments">
+        <a
+          id="wd-course-quizzes-link"
+          href="#/Kanbas/Courses/1234/Assignments"
+          className="list-group-item text-danger border border-0"
+        >
           Assignments
         </a>
-      </li>
-      <li>
-        <a id="wd-course-assignments-link" href="#/Kanbas/Courses/1234/Quizzes">
+        <a
+          id="wd-course-assignments-link"
+          href="#/Kanbas/Courses/1234/Quizzes"
+          className="list-group-item text-danger border border-0"
+        >
           Quizzes
         </a>
-      </li>
-      <li>
-        <a id="wd-course-grades-link" href="#/Kanbas/Courses/1234/Grades">
+        <a
+          id="wd-course-grades-link"
+          href="#/Kanbas/Courses/1234/Grades"
+          className="list-group-item text-danger border border-0"
+        >
           Grades
         </a>
-      </li>
+      </div>
     </ul>
   );
 }
