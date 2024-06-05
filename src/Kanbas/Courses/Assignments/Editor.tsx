@@ -1,21 +1,25 @@
 export default function AssignmentEditor() {
   return (
     <div id="wd-assignments-editor" className=" form ms-5 me-5">
-      <div className="form-group">
+      <div className="form-group mt-5 mb-5">
         <label htmlFor="wd-name">Assignment Name</label>
-        <input className="form-control" id="wd-name" value="A1 - ENV + HTML" />
-        <br />
+        <input
+          className="form-control mb-2"
+          id="wd-name"
+          value="A1 - ENV + HTML"
+        />
         <textarea id="wd-description" className="form-control">
           The assignment is available online Submit a link to the landing page
           of
         </textarea>
       </div>
-      <br />
-      <br />
 
-      <div className="form-group w-50">
+      <div className="form-group float-end w-75 mb-3">
         <div className="mb-3 row">
-          <label htmlFor="wd-points-input" className="col-sm-2 col-form-label">
+          <label
+            htmlFor="wd-points-input"
+            className="col-sm-2 col-form-label float-end"
+          >
             Points
           </label>
           <div className="col-sm-10">
@@ -29,11 +33,9 @@ export default function AssignmentEditor() {
         </div>
       </div>
 
-      <br />
-      <br />
-      <div className="row w-50">
+      <div className="row float-end w-75 mb-3">
         <div className="col">
-          <label htmlFor="wd-group" className="form-label">
+          <label htmlFor="wd-group" className="form-label float-end">
             Assignment Group
           </label>
         </div>
@@ -43,32 +45,31 @@ export default function AssignmentEditor() {
         </select>
       </div>
 
-      <br />
-      <br />
-
-      <div className="row w-50">
-        <label htmlFor="wd-display-grade-as" className="col">
-          Display Grade As
-        </label>
+      <div className="row w-75 float-end mb-3">
+        <div className="col">
+          <label htmlFor="wd-display-grade-as" className="form-label float-end">
+            Display Grade As
+          </label>
+        </div>
         <select id="wd-display-grade-as" className="form-select col">
           <option value="Percentage">Percentage</option>
           <option value="Letter">Letter</option>
         </select>
       </div>
 
-      <br />
-      <br />
-
-      <div className="row w-50">
-        <label className="col"> Submission Type</label>
+      <div className="row w-75 float-end mb-3">
+        <div className="col">
+          <label className="float-end"> Submission Type</label>
+        </div>
         <div className="col border rounded">
-          <select id="wd-submission-type" className="form-select mt-2">
+          <select id="wd-submission-type" className="form-select mt-2 mb-2">
             <option value="ONLINE">Online</option>
             <option value="ONGROUND">Onground</option>
           </select>
-          <br />
 
-          <label className="form-label">Online Entry Options</label>
+          <label className="form-label justify-content-center align-self-center">
+            Online Entry Options
+          </label>
           <div className="col-sm-10 offset-sm-2">
             <div className="form-check">
               <input
@@ -128,10 +129,12 @@ export default function AssignmentEditor() {
           </div>
         </div>
       </div>
-      <br />
 
-      <div className="row w-50">
-        <label className="form-label col">Assign</label>
+      <div className="row w-75 float-end mb-5">
+        <div className="col">
+          <label className="form-label float-end">Assign</label>
+        </div>
+
         <div className="col border rounded">
           <label htmlFor="wd-assign-to" className="form-label">
             <b>Assign To</b>
@@ -141,11 +144,11 @@ export default function AssignmentEditor() {
             className="form-control"
             value={"Everyone"}
           ></input>
-          <label htmlFor="wd-due-date" className="form-label">
+          <label htmlFor="wd-due-date" className="form-label mt-3">
             Due
           </label>
           <input type="date" id="wd-due-date" className="form-control"></input>
-          <div className="row">
+          <div className="row mt-3">
             <label
               htmlFor="wd-available-from"
               className="col justify-content-center align-self-center"
@@ -173,19 +176,21 @@ export default function AssignmentEditor() {
           </div>
         </div>
       </div>
-      <hr />
-      <button
-        id="wd-add-asmnt-group-btn"
-        className="btn btn-lg btn-secondary me-1 float-end"
-      >
-        Cancel
-      </button>
-      <button
-        id="wd-add-asmnt-btn"
-        className="btn btn-lg btn-danger me-1 float-end"
-      >
-        Save
-      </button>
+      <div className="footer float-end w-75 mb-5">
+        <hr />
+        <button
+          id="wd-add-asmnt-group-btn"
+          className="btn btn-lg btn-secondary me-1 float-end"
+        >
+          Cancel
+        </button>
+        <button
+          id="wd-add-asmnt-btn"
+          className="btn btn-lg btn-danger me-1 float-end"
+        >
+          Save
+        </button>
+      </div>
     </div>
   );
 }

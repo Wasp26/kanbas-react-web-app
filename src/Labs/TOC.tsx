@@ -42,7 +42,7 @@ export default function TOC() {
       </li>
       <li className="nav-item">
         <a
-          id="wd-k"
+          id="wd-github"
           href="https://github.com/Wasp26/kanbas-react-web-app"
           className="nav-link"
         >

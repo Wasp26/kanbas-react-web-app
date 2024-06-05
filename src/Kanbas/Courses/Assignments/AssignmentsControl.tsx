@@ -3,7 +3,7 @@ import "../Grades/SearchStyles.css";
 
 export default function AssignmentsControl() {
   return (
-    <div id="wd-asmnt-control" className="text-nowrap">
+    <div id="wd-asmnt-control" className="text-nowrap mb-5">
       <button
         id="wd-add-asmnt-btn"
         className="btn btn-lg btn-danger me-1 float-end"

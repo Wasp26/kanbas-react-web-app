@@ -11,10 +11,6 @@ export default function Assignments() {
   return (
     <div id="wd-assignments">
       <AssignmentsControl />
-      <br />
-      <br />
-      <br />
-      <br />
 
       <ul className="wd-assignments list-group rounded-0">
         <li className="wd-asmnts-title list-item p-0">

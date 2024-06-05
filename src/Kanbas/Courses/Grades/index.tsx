@@ -5,7 +5,7 @@ export default function Grades() {
   return (
     <div id="wd-grades-panel" className="ms-5">
       <GradesControl />
-      <div className="table-responsive mt-5">
+      <div className="table-responsive">
         <table className="table table-striped table-bordered grades-table">
           <thead className="thead-dark">
             <tr>
@@ -70,7 +70,7 @@ export default function Grades() {
                 <div className="row ps-3 pb-2">
                   <input
                     className="col form-control text-center"
-                    placeholder="100"
+                    value="100"
                   ></input>
                   <div className="col pt-1">
                     <TbFileExport />
@@ -90,7 +90,7 @@ export default function Grades() {
             </tr>
             <tr>
               <th scope="row" className="text-danger">
-                Jane Adams
+                Siran Cao
               </th>
               <td>100%</td>
               <td>100%</td>

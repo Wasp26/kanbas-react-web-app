@@ -8,35 +8,32 @@ import { CiFilter } from "react-icons/ci";
 import "./SearchStyles.css";
 export default function GradesControl() {
   return (
-    <div id="wd-grades-controls" className="text-nowrap">
-      <button
-        id="wd-settings-btn"
-        className="btn btn-lg btn-secondary me-1 float-end"
-      >
-        <IoSettingsOutline />
-      </button>
+    <div className="mt-5">
+      <div id="wd-grades-controls" className="text-nowrap w-100 float-end mb-3">
+        <button
+          id="wd-settings-btn"
+          className="btn btn-lg btn-secondary me-1 float-end"
+        >
+          <IoSettingsOutline />
+        </button>
 
-      <button
-        id="wd-export-btn"
-        className="btn btn-lg btn-secondary me-1 float-end"
-      >
-        <TbFileExport />
-        Export
-        <TiArrowSortedDown />
-      </button>
+        <button
+          id="wd-export-btn"
+          className="btn btn-lg btn-secondary me-1 float-end"
+        >
+          <TbFileExport />
+          Export
+          <TiArrowSortedDown />
+        </button>
 
-      <button
-        id="wd-import-btn"
-        className="btn btn-lg btn-secondary me-1 float-end"
-      >
-        <LiaFileImportSolid />
-        Import
-      </button>
-
-      <br />
-      <br />
-      <br />
-      <br />
+        <button
+          id="wd-import-btn"
+          className="btn btn-lg btn-secondary me-1 float-end"
+        >
+          <LiaFileImportSolid />
+          Import
+        </button>
+      </div>
 
       <div id="wd-grades-search-panel">
         <div id="wd-search-panel-titles" className="row">
@@ -70,16 +67,13 @@ export default function GradesControl() {
           </div>
         </div>
       </div>
-      <br />
       <button
         id="wd-import-btn"
-        className="btn btn-lg btn-secondary me-1 float-start"
+        className="btn btn-lg btn-secondary me-1 mt-3 mb-3"
       >
         <CiFilter />
         Apply Filters
       </button>
-      <br />
-      <br />
     </div>
   );
 }
