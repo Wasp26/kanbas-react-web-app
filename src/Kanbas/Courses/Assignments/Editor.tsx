@@ -1,4 +1,10 @@
+import { useParams } from "react-router";
+import * as db from "../../Database";
+import { Link } from "react-router-dom";
 export default function AssignmentEditor() {
+  const { cid: cid, aid: aid } = useParams();
+  const assignment = db.assignments.find((assignment) => assignment._id == aid);
+
   return (
     <div id="wd-assignments-editor" className=" form ms-5 me-5">
       <div className="form-group mt-5 mb-5">
@@ -6,7 +12,7 @@ export default function AssignmentEditor() {
         <input
           className="form-control mb-2"
           id="wd-name"
-          value="A1 - ENV + HTML"
+          value={`${assignment?.title}`}
         />
         <textarea id="wd-description" className="form-control">
           The assignment is available online Submit a link to the landing page
@@ -147,7 +153,12 @@ export default function AssignmentEditor() {
           <label htmlFor="wd-due-date" className="form-label mt-3">
             Due
           </label>
-          <input type="date" id="wd-due-date" className="form-control"></input>
+          <input
+            type="date"
+            id="wd-due-date"
+            className="form-control"
+            value={"2024-05-13"}
+          ></input>
           <div className="row mt-3">
             <label
               htmlFor="wd-available-from"
@@ -167,6 +178,7 @@ export default function AssignmentEditor() {
               type="date"
               id="wd-available-from"
               className="col justify-content-center align-self-center form-control"
+              value={"2024-05-06"}
             ></input>
             <input
               type="date"
@@ -178,18 +190,20 @@ export default function AssignmentEditor() {
       </div>
       <div className="footer float-end w-75 mb-5">
         <hr />
-        <button
+        <Link
+          to={`/Kanbas/Courses/${cid}/Assignments`}
           id="wd-add-asmnt-group-btn"
           className="btn btn-lg btn-secondary me-1 float-end"
         >
           Cancel
-        </button>
-        <button
+        </Link>
+        <Link
           id="wd-add-asmnt-btn"
           className="btn btn-lg btn-danger me-1 float-end"
+          to={`/Kanbas/Courses/${cid}/Assignments`}
         >
           Save
-        </button>
+        </Link>
       </div>
     </div>
   );

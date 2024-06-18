@@ -24,7 +24,7 @@ export default function AssignmentsControl() {
         </div>
         <input
           className=" col form-control text-center search-bar"
-          placeholder="Search Students"
+          placeholder="Search Assignments"
         ></input>
       </div>
     </div>
