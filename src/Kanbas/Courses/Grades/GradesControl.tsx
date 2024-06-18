@@ -8,7 +8,7 @@ import { CiFilter } from "react-icons/ci";
 import "./SearchStyles.css";
 export default function GradesControl() {
   return (
-    <div className="mt-5">
+    <div className="mt-2">
       <div id="wd-grades-controls" className="text-nowrap w-100 float-end mb-3">
         <button
           id="wd-settings-btn"

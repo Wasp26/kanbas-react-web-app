@@ -66,10 +66,6 @@ export default function ModulesControls() {
               Unpublish modules only
             </a>
           </li>
-
-          {/* Create two more items with IDs wd-unpublish-all-modules-and-items and
-              wd-unpublish-modules-only with labels Unpublish all modules and items
-              and Unpublish modules only */}
         </ul>
       </div>
 
