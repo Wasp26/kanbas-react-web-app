@@ -30,6 +30,7 @@ import TernaryOperator from "./TernaryOperator";
 import VariableTypes from "./VariableTypes";
 import VariablesAndConstants from "./VariablesAndConstants";
 import TodoList from "./todos/TodosList";
+import PathParameters from "./PathParameters";
 
 export default function Lab3() {
   console.log("Hello World!");
@@ -63,10 +64,13 @@ export default function Lab3() {
       <FunctionDestructing />
       <DestructingImports />
       <Classes />
+      <hr />
       <Styles />
+      <hr />
       <Add a={3} b={4} />
       <h4>Square of 4</h4>
       <Square>4</Square>
+      <hr />
       <Highlight>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipitratione
         eaque illo minus cum, saepe totam vel nihil repellat nemo explicabo
@@ -74,7 +78,8 @@ export default function Lab3() {
         voluptates.
       </Highlight>
       <hr />
-      <AddPathParameters />
+      <PathParameters />
+      {/* <AddPathParameters /> */}
     </div>
   );
 }
