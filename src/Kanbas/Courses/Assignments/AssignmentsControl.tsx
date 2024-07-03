@@ -1,16 +1,18 @@
 import { CiSearch } from "react-icons/ci";
 import "../Grades/SearchStyles.css";
+import { Link } from "react-router-dom";
 
-export default function AssignmentsControl() {
+export default function AssignmentsControl({ cid }: { cid: any }) {
   return (
     <div id="wd-asmnt-control" className="text-nowrap mb-5">
-      <button
-        id="wd-add-asmnt-btn"
-        className="btn btn-lg btn-danger me-1 float-end"
-      >
-        +Assignment
-      </button>
-
+      <Link to={`/Kanbas/Courses/${cid}/Assignments/create`}>
+        <button
+          id="wd-add-asmnt-btn"
+          className="btn btn-lg btn-danger me-1 float-end"
+        >
+          +Assignment
+        </button>
+      </Link>
       <button
         id="wd-add-asmnt-group-btn"
         className="btn btn-lg btn-secondary me-1 float-end"

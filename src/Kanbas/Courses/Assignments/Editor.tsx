@@ -1,9 +1,37 @@
 import { useParams } from "react-router";
 import * as db from "../../Database";
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addAssignment, updateAssignment } from "./reducer";
+
 export default function AssignmentEditor() {
   const { cid: cid, aid: aid } = useParams();
-  const assignment = db.assignments.find((assignment) => assignment._id == aid);
+  const { pathname } = useLocation();
+  const isCreate = pathname.includes("create");
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+
+  const [assignment, setAssignment] = useState<any>(
+    isCreate
+      ? {
+          course: cid,
+          title: "New Assignment title",
+          description: "New assignment description",
+          points: 100,
+          dueDate: "2024-07-01",
+          availableFrom: "2024-06-01",
+          availableUntil: "2024-07-08",
+        }
+      : assignments.find((a: any) => a._id == aid)
+  );
+
+  const dispatch = useDispatch();
+  //
+
+  // if (!isCreate) {
+  //   setAssignment(db.);
+  // }
 
   return (
     <div id="wd-assignments-editor" className=" form ms-5 me-5">
@@ -13,10 +41,20 @@ export default function AssignmentEditor() {
           className="form-control mb-2"
           id="wd-name"
           value={`${assignment?.title}`}
+          onChange={(e) =>
+            setAssignment({ ...assignment, title: e.target.value })
+          }
         />
-        <textarea id="wd-description" className="form-control">
-          The assignment is available online Submit a link to the landing page
-          of
+        <textarea
+          id="wd-description"
+          className="form-control"
+          onChange={(e) =>
+            setAssignment({ ...assignment, description: e.target.value })
+          }
+        >
+          {assignment.description
+            ? assignment.description
+            : "The assignment is availabl/e online Submit a link to the landing page of"}
         </textarea>
       </div>
 
@@ -33,7 +71,13 @@ export default function AssignmentEditor() {
               type="text"
               className="form-control"
               id="wd-points-input"
-              value="100"
+              value={assignment.points ? assignment.points.toString() : "100"}
+              onChange={(e) =>
+                setAssignment({
+                  ...assignment,
+                  points: parseInt(e.target.value),
+                })
+              }
             />
           </div>
         </div>
@@ -157,7 +201,12 @@ export default function AssignmentEditor() {
             type="date"
             id="wd-due-date"
             className="form-control"
-            value={"2024-05-13"}
+            value={
+              assignment.dueDate ? assignment.dueDate.toString() : "2024-05-13"
+            }
+            onChange={(e) =>
+              setAssignment({ ...assignment, dueDate: e.target.value })
+            }
           ></input>
           <div className="row mt-3">
             <label
@@ -178,12 +227,27 @@ export default function AssignmentEditor() {
               type="date"
               id="wd-available-from"
               className="col justify-content-center align-self-center form-control"
-              value={"2024-05-06"}
+              value={
+                assignment.availableFrom
+                  ? assignment.availableFrom
+                  : "2024-05-06"
+              }
+              onChange={(e) =>
+                setAssignment({ ...assignment, availableFrom: e.target.value })
+              }
             ></input>
             <input
               type="date"
               id="wd-until"
               className="col justify-content-center align-self-center form-control"
+              value={
+                assignment.availableUntil
+                  ? assignment.availableUntil
+                  : "2024-06-06"
+              }
+              onChange={(e) =>
+                setAssignment({ ...assignment, availableUntil: e.target.value })
+              }
             ></input>
           </div>
         </div>
@@ -197,12 +261,18 @@ export default function AssignmentEditor() {
         >
           Cancel
         </Link>
-        <Link
-          id="wd-add-asmnt-btn"
-          className="btn btn-lg btn-danger me-1 float-end"
-          to={`/Kanbas/Courses/${cid}/Assignments`}
-        >
-          Save
+        <Link to={`/Kanbas/Courses/${cid}/Assignments`}>
+          <button
+            id="wd-add-asmnt-btn"
+            className="btn btn-lg btn-danger me-1 float-end"
+            onClick={() =>
+              isCreate
+                ? dispatch(addAssignment(assignment))
+                : dispatch(updateAssignment(assignment))
+            }
+          >
+            Save
+          </button>
         </Link>
       </div>
     </div>
