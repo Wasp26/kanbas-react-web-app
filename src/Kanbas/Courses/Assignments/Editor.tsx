@@ -1,16 +1,38 @@
 import { useParams } from "react-router";
-import * as db from "../../Database";
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addAssignment, updateAssignment } from "./reducer";
+import { addAssignment, setAssignments, updateAssignment } from "./reducer";
+import * as client from "./client";
 
 export default function AssignmentEditor() {
   const { cid: cid, aid: aid } = useParams();
   const { pathname } = useLocation();
   const isCreate = pathname.includes("create");
   const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+
+  const fetchAssignments = async () => {
+    const assignments = await client.findAssignmentsForCourse(cid as string);
+    dispatch(setAssignments(assignments));
+  };
+
+  const saveAssignment = async (assignment: any) => {
+    await client.updateAssignment(cid as string, assignment);
+    dispatch(updateAssignment(assignment));
+  };
+
+  const createAssignment = async (assignment: any) => {
+    const newAssignment = await client.createNewAssignment(
+      cid as string,
+      assignment
+    );
+    dispatch(addAssignment(newAssignment));
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, []);
 
   const [assignment, setAssignment] = useState<any>(
     isCreate
@@ -27,11 +49,6 @@ export default function AssignmentEditor() {
   );
 
   const dispatch = useDispatch();
-  //
-
-  // if (!isCreate) {
-  //   setAssignment(db.);
-  // }
 
   return (
     <div id="wd-assignments-editor" className=" form ms-5 me-5">
@@ -267,8 +284,8 @@ export default function AssignmentEditor() {
             className="btn btn-lg btn-danger me-1 float-end"
             onClick={() =>
               isCreate
-                ? dispatch(addAssignment(assignment))
-                : dispatch(updateAssignment(assignment))
+                ? createAssignment(assignment)
+                : saveAssignment(assignment)
             }
           >
             Save
