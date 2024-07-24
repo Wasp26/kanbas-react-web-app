@@ -4,6 +4,7 @@ import { FaPencil, FaTrash } from "react-icons/fa6";
 import { FaPlusCircle } from "react-icons/fa";
 import { TiDelete } from "react-icons/ti";
 export default function WorkingWithArraysAsynchronously() {
+  console.log("JNDOJNV");
   const [todos, setTodos] = useState<any[]>([]);
   const fetchTodos = async () => {
     const todos = await client.fetchTodos();
