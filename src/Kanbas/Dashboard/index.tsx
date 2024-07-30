@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import * as db from "../Database";
 
@@ -9,6 +9,7 @@ export default function Dashboard({
   addNewCourse,
   deleteCourse,
   updateCourse,
+  fetchCourses,
 }: {
   courses: any[];
   course: any;
@@ -16,7 +17,11 @@ export default function Dashboard({
   addNewCourse: () => void;
   deleteCourse: (course: any) => void;
   updateCourse: () => void;
+  fetchCourses: () => void;
 }) {
+  useEffect(() => {
+    fetchCourses();
+  }, []);
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1> <hr />

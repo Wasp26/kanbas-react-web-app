@@ -16,9 +16,6 @@ export default function Kanbas() {
     const courses = await client.fetchAllCourses();
     setCourses(courses);
   };
-  useEffect(() => {
-    fetchCourses();
-  }, []);
 
   const [course, setCourse] = useState<any>({
     _id: "0",
@@ -53,6 +50,10 @@ export default function Kanbas() {
     );
   };
 
+  useEffect(() => {
+    fetchCourses();
+  }, []);
+
   return (
     <Provider store={store}>
       <div id="wd-kanbas" className="h-100">
@@ -75,6 +76,7 @@ export default function Kanbas() {
                       addNewCourse={addNewCourse}
                       deleteCourse={deleteCourse}
                       updateCourse={updateCourse}
+                      fetchCourses={fetchCourses}
                     />
                   </ProtectedRoute>
                 }
