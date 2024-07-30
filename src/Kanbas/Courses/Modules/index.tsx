@@ -5,7 +5,13 @@ import { BsGripVertical } from "react-icons/bs";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setModules, addModule, deleteModule, updateModule } from "./reducer";
+import {
+  setModules,
+  addModule,
+  deleteModule,
+  updateModule,
+  editModule,
+} from "./reducer";
 import * as client from "./client";
 export default function Modules() {
   const { cid } = useParams();
@@ -19,6 +25,7 @@ export default function Modules() {
   };
   const createModule = async (module: any) => {
     const newModule = await client.createModule(cid as string, module);
+    console.log(newModule);
     dispatch(addModule(newModule));
   };
   const removeModule = async (moduleId: string) => {
@@ -62,11 +69,11 @@ export default function Modules() {
                   <input
                     className="form-control w-50 d-inline-block"
                     onChange={(e) =>
-                      saveModule({ ...module, name: e.target.value })
+                      saveModule({ ...courseModule, name: e.target.value })
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        saveModule({ ...module, editing: false });
+                        saveModule({ ...courseModule, editing: false });
                       }
                     }}
                     value={courseModule.name}
@@ -78,7 +85,7 @@ export default function Modules() {
                     removeModule(moduleId);
                   }}
                   editModule={(moduleId) => {
-                    dispatch(deleteModule(moduleId));
+                    dispatch(editModule(moduleId));
                   }}
                 />
               </div>
