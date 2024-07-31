@@ -9,6 +9,9 @@ export default function Signin() {
   const [credentials, setCredentials] = useState<any>({});
   const navigate = useNavigate();
   const signin = async () => {
+    if (!("username" in credentials && "password" in credentials)) {
+      return;
+    }
     try {
       const currentUser = await client.signin(credentials);
       dispatch(setCurrentUser(currentUser));
