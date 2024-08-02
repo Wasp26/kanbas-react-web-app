@@ -9,12 +9,21 @@ import store from "./store";
 import { Provider } from "react-redux";
 import Account from "./Account";
 import ProtectedRoute from "./ProtectedRoute";
+import Enroll from "./Dashboard/enroll";
 
 export default function Kanbas() {
-  const [courses, setCourses] = useState<any[]>([]);
-  const fetchCourses = async () => {
-    const courses = await client.fetchAllCourses();
+  const [enrolledCourses, setCourses] = useState<any[]>([]);
+  const [unenrolledCourses, setNewCourses] = useState<any[]>([]);
+
+  const fetchAssociatedCourses = async () => {
+    const courses = await client.fetchAssociatedCourses();
+    console.log(courses);
     setCourses(courses);
+  };
+
+  const fetchUnAssociatedCourses = async () => {
+    const courses = await client.fetchUnAssociatedCourses();
+    setNewCourses(courses);
   };
 
   const [course, setCourse] = useState<any>({
@@ -29,18 +38,18 @@ export default function Kanbas() {
 
   const addNewCourse = async () => {
     const newCourse = await client.createCourse(course);
-    setCourses([...courses, newCourse]);
+    setCourses([...enrolledCourses, newCourse]);
   };
 
   const deleteCourse = async (courseId: string) => {
     await client.deleteCourse(courseId);
-    setCourses(courses.filter((c) => c._id !== courseId));
+    setCourses(enrolledCourses.filter((c) => c._id !== courseId));
   };
 
   const updateCourse = async () => {
     await client.updateCourse(course);
     setCourses(
-      courses.map((c) => {
+      enrolledCourses.map((c) => {
         if (c._id === course._id) {
           return course;
         } else {
@@ -50,9 +59,13 @@ export default function Kanbas() {
     );
   };
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
+  const studentEnroll = async (courseId: string) => {
+    await client.studentEnroll(courseId);
+  };
+
+  // useEffect(() => {
+  //   fetchCourses();
+  // }, []);
 
   return (
     <Provider store={store}>
@@ -64,19 +77,29 @@ export default function Kanbas() {
           <div className="flex-fill p-4">
             <Routes>
               <Route path="/" element={<Navigate to="Dashboard" />} />
+              <Route
+                path="/Enroll"
+                element={
+                  <Enroll
+                    courses={unenrolledCourses}
+                    fetchUnAssociatedCourses={fetchUnAssociatedCourses}
+                    studentEnroll={studentEnroll}
+                  />
+                }
+              />
               <Route path="/Account/*" element={<Account />} />
               <Route
                 path="Dashboard"
                 element={
                   <ProtectedRoute>
                     <Dashboard
-                      courses={courses}
+                      courses={enrolledCourses}
                       course={course}
                       setCourse={setCourse}
                       addNewCourse={addNewCourse}
                       deleteCourse={deleteCourse}
                       updateCourse={updateCourse}
-                      fetchCourses={fetchCourses}
+                      fetchAssociatedCourses={fetchAssociatedCourses}
                     />
                   </ProtectedRoute>
                 }
@@ -85,7 +108,7 @@ export default function Kanbas() {
                 path="Courses/:cid/*"
                 element={
                   <ProtectedRoute>
-                    <Courses courses={courses} />
+                    <Courses courses={enrolledCourses} />
                   </ProtectedRoute>
                 }
               />

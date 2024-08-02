@@ -7,6 +7,8 @@ import CoursesNavigation from "./Navigation";
 import { Navigate, Route, Routes, useParams, useLocation } from "react-router";
 import { FaAlignJustify } from "react-icons/fa6";
 import PeopleTable from "../../Labs/Courses/People/Table";
+import Quizzes from "./Quizzes";
+import Enroll from "../Dashboard/enroll";
 
 export default function Courses({ courses }: { courses: any[] }) {
   const { cid: cid } = useParams();
@@ -33,6 +35,7 @@ export default function Courses({ courses }: { courses: any[] }) {
             <Route path="Grades" element={<Grades />} />
             <Route path="People" element={<PeopleTable />} />
             <Route path="People/:uid" element={<PeopleTable />} />
+            <Route path="Quizzes" element={<Quizzes />} />
           </Routes>
         </div>
       </div>

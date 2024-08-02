@@ -5,11 +5,13 @@ import { useNavigate, useParams } from "react-router";
 import { FaCheck, FaPencil } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import * as client from "./client";
+import { useSelector } from "react-redux";
 export default function PeopleDetails({
   fetchUsers,
 }: {
   fetchUsers: () => void;
 }) {
+  const { isStaff } = useSelector((state: any) => state.accountReducer);
   const navigate = useNavigate();
   const deleteUser = async (uid: string) => {
     await client.deleteUser(uid);
@@ -54,7 +56,7 @@ export default function PeopleDetails({
       </div>
       <hr />
       <div className="text-danger fs-4 wd-name">
-        {!editing && (
+        {isStaff && !editing && (
           <FaPencil
             onClick={() => setEditing(true)}
             className="float-end fs-5 mt-2 wd-edit"
@@ -91,13 +93,15 @@ export default function PeopleDetails({
       <br />
       <b>Total Activity:</b>{" "}
       <span className="wd-total-activity">{user.totalActivity}</span> <hr />
-      <button
-        onClick={() => deleteUser(uid)}
-        className="btn btn-danger float-end wd-delete"
-      >
-        {" "}
-        Delete{" "}
-      </button>
+      {isStaff && (
+        <button
+          onClick={() => deleteUser(uid)}
+          className="btn btn-danger float-end wd-delete"
+        >
+          {" "}
+          Delete{" "}
+        </button>
+      )}
       <button
         onClick={() => navigate(`/Kanbas/Courses/${cid}/People`)}
         className="btn btn-secondary float-start float-end me-2 wd-cancel"
