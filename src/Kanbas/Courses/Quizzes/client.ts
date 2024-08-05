@@ -13,11 +13,24 @@ export const createQuizDetails = async (courseId: string, quiz: any) => {
 };
 
 export const updateQuizDetails = async (courseId: string, quiz: any) => {
+  console.log(quiz._id);
   const { data } = await axios.put(`${QUIZ_API}/${courseId}/${quiz._id}`, quiz);
   return data;
 };
 
+export const deleteQuiz = async (courseId: string, quizId: string) => {
+  await axios.delete(`${QUIZ_API}/${courseId}/${quizId}`);
+};
+
 export const fetchQuizzes = async (courseId: string) => {
   const { data } = await axios.get(`${QUIZ_API}/${courseId}`);
+  return data;
+};
+
+export const findQuizzesByPartialName = async (
+  courseId: string,
+  name: string
+) => {
+  const { data } = await axios.get(`${QUIZ_API}/${courseId}/search/${name}`);
   return data;
 };

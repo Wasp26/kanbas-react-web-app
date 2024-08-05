@@ -1,4 +1,4 @@
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 export default function QuizDetailsEditor({
   quizDetails,
@@ -11,20 +11,29 @@ export default function QuizDetailsEditor({
   createQuizDetails: () => void;
   saveQuizDetails: () => void;
 }) {
-  const { cid, qzid } = useParams();
+  const navigate = useNavigate();
+  const { cid } = useParams();
   const { pathname } = useLocation();
   const isCreate = pathname.includes("create");
+  let qzid = quizDetails._id;
 
-  const saveHandler = (e: any) => {
-    if (e.target.value === "Save and Publish") {
-      setQuizDetails({ ...quizDetails, published: true });
-    }
-
+  const saveAndPublishHandler = (e: any) => {
     if (isCreate) {
       createQuizDetails();
     } else {
       saveQuizDetails();
     }
+    navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+  };
+
+  const saveHandler = async (e: any) => {
+    setQuizDetails({ ...quizDetails, published: true });
+    if (isCreate) {
+      qzid = await createQuizDetails();
+    } else {
+      saveQuizDetails();
+    }
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Details`);
   };
 
   return (
@@ -240,7 +249,10 @@ export default function QuizDetailsEditor({
           <input
             type="date"
             className="form-control"
-            value={quizDetails.availableFrom.split("T")[0]}
+            value={
+              quizDetails.availableFrom &&
+              quizDetails.availableFrom.split("T")[0]
+            }
             onChange={(e) =>
               setQuizDetails({ ...quizDetails, availableFrom: e.target.value })
             }
@@ -257,7 +269,7 @@ export default function QuizDetailsEditor({
           <input
             type="date"
             className="form-control"
-            value={quizDetails.dueDate.split("T")[0]}
+            value={quizDetails.dueDate && quizDetails.dueDate.split("T")[0]}
             onChange={(e) =>
               setQuizDetails({ ...quizDetails, dueDate: e.target.value })
             }
@@ -274,7 +286,10 @@ export default function QuizDetailsEditor({
           <input
             type="date"
             className="form-control"
-            value={quizDetails.availableUntil.split("T")[0]}
+            value={
+              quizDetails.availableUntil &&
+              quizDetails.availableUntil.split("T")[0]
+            }
             onChange={(e) =>
               setQuizDetails({
                 ...quizDetails,
@@ -306,21 +321,16 @@ export default function QuizDetailsEditor({
         Cancel
       </Link>
 
-      <Link
-        to={`/Kanbas/Courses/${cid}/Quizzes`}
+      <button
         className="btn btn-danger float-end me-1"
-        onClick={saveHandler}
+        onClick={saveAndPublishHandler}
       >
         Save and Publish
-      </Link>
+      </button>
 
-      <Link
-        to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Details`}
-        className="btn btn-danger float-end me-1"
-        onClick={saveHandler}
-      >
+      <button className="btn btn-danger float-end me-1" onClick={saveHandler}>
         Save
-      </Link>
+      </button>
     </div>
   );
 }

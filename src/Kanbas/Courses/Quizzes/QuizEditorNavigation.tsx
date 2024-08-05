@@ -14,7 +14,7 @@ export default function QuizEditorNavigation({
       <li className="nav-item">
         <Link
           id="wd-quiz-details-link"
-          to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Details`}
+          to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${qzid}/Details`}
           className="nav-link text-decoration-none text-danger"
         >
           Details
@@ -23,7 +23,7 @@ export default function QuizEditorNavigation({
       <li className="nav-item ">
         <Link
           id="wd-quiz-questions-link"
-          to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Questions`}
+          to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${qzid}/Questions`}
           className="nav-link text-decoration-none text-danger"
         >
           Questions
