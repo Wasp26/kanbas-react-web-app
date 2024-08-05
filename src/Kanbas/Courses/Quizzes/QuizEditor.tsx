@@ -2,8 +2,11 @@ import { Navigate, Route, Routes, useLocation, useParams } from "react-router";
 import * as client from "./client";
 import { useEffect, useState } from "react";
 import QuizDetailsEditor from "./QuizDetailsEditor";
-import QuizQuestionsEditor from "./QuizQuestionsEditor";
+import QuizQuestionsEditor from "./Questions/QuizQuestionsEditor";
 import QuizEditorNavigation from "./QuizEditorNavigation";
+import TrueFalseEditor from "./Questions/TrueFalseEditor";
+import FillInBlanksEditor from "./Questions/FillInBlanksEditor";
+import MultipleChoiceEditor from "./Questions/MultipleChoiceEditor";
 export default function QuizEditor() {
   const { cid, qzid } = useParams();
   const { pathname } = useLocation();
@@ -75,6 +78,9 @@ export default function QuizEditor() {
           }
         />
         <Route path="Questions/" element={<QuizQuestionsEditor />} />
+        <Route path="Questions/edit/true-false/:id" element={<TrueFalseEditor />} />
+          <Route path="Questions/edit/multiple-choice/:id" element={<MultipleChoiceEditor />} />
+          <Route path="Questions/edit/fill-in-multiple-blanks/:id" element={<FillInBlanksEditor />} />
       </Routes>
     </div>
   );
