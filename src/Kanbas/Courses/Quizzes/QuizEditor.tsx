@@ -53,7 +53,7 @@ export default function QuizEditor({
         <Route path="Questions/" element={<QuizQuestionsEditor />} />
         <Route path="Questions/edit/true-false/:id" element={<TrueFalseEditor />} />
           <Route path="Questions/edit/multiple-choice/:id" element={<MultipleChoiceEditor />} />
-          <Route path="Questions/edit/fill-in-multiple-blanks/:id" element={<FillInBlanksEditor />} />
+          <Route path="Questions/edit/fill-in-blanks/:id" element={<FillInBlanksEditor />} />
       </Routes>
     </div>
   );

@@ -1,42 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { addQuestion, updateQuestion, deleteQuestion } from './reducer';
 import { FaTrash } from 'react-icons/fa6';
-
-const defaultQuestion = {
-  id: '',
-  type: 'multiple-choice',
-  text: 'default text',
-  points: 0,
-  isEditing: true,
-  originalText: '',
-  originalPoints: 0,
-  answers: [],
-  correctAnswer: '',
-  feedback: '',
-};
+import { deleteQuestion } from './reducer';
 
 export default function QuizQuestionsEditor() {
-  const [editingQuestion, setEditingQuestion] = useState<any>(null); 
+  const [newQuestionType, setNewQuestionType] = useState('multiple-choice');
   const dispatch = useDispatch();
   const questions = useSelector((state: any) => state.questions.questions);
+  const navigate = useNavigate();
 
   const handleAddQuestion = () => {
-    if (editingQuestion) {
-    
-      return;
-    }
-    const newQuestion = { ...defaultQuestion, id: new Date().getTime().toString() };
-    setEditingQuestion(newQuestion); 
+    const newQuestionId = new Date().getTime().toString();
+    navigate(`./edit/${newQuestionType}/${newQuestionId}`);
   };
-
-  const navigate = useNavigate();
 
   const handleEditQuestion = (id: string) => {
     const question = questions.find((q: any) => q.id === id);
     if (question) {
-      setEditingQuestion(question); 
       const path = `./edit/${question.type}/${id}`;
       navigate(path);
     }
@@ -46,74 +27,68 @@ export default function QuizQuestionsEditor() {
     dispatch(deleteQuestion(id));
   };
 
-  const handleSaveQuestion = () => {
-    if (editingQuestion) {
-      dispatch(addQuestion(editingQuestion)); 
-      setEditingQuestion(null); 
-    }
-  };
-
-  const handleCancelEdit = () => {
-    if (editingQuestion) {
-      const isInList = questions.some((q: any) => q.id === editingQuestion.id);
-      
-      if (!isInList) {
-        dispatch(deleteQuestion(editingQuestion.id));
-      }
-      setEditingQuestion(null);
-    }
-  };
-
-  const handleFieldChange = (field: string, value: any) => {
-    if (editingQuestion) {
-      setEditingQuestion({ ...editingQuestion, [field]: value });
-    }
-  };
-
   const totalQuestions = questions.length;
   const totalPoints = questions.reduce((sum: number, question: any) => sum + question.points, 0);
 
   return (
     <div>
-      <div><h2>QUESTIONS EDITOR</h2></div>
-      <div className='float-end'>
-        <h3>Total Questions: {totalQuestions}</h3>
-        <h3>Total Points: {totalPoints}</h3>
+      <div><h2>QUESTIONS EDITOR</h2>
+        <span className='float-end'>
+          <label className='me-3'> Questions: {totalQuestions}</label>
+          <label >Points: {totalPoints}</label>
+        </span>
       </div>
-      <button className='btn btn-lg btn-secondary mb-3' onClick={handleAddQuestion}>New Question</button>
-      {editingQuestion ? (
-        <div className='d-flex mt-3'>
-          <select
-            className='form-select w-25 me-2'
-            value={editingQuestion.type}
-            onChange={(e) => handleFieldChange('type', e.target.value)}
-          >
-            <option value="true-false">True/False</option>
-            <option value="multiple-choice">Multiple Choice</option>
-            <option value="fill-in-multiple-blanks">Fill in Multiple Blanks</option>
-          </select>
-          <input
-            type="number"
-            className='form-control w-25 me-2'
-            value={editingQuestion.points}
-            onChange={(e) => handleFieldChange('points', parseInt(e.target.value, 10))}
-          />
-          <button className='btn btn-danger me-2' onClick={handleSaveQuestion}>Save</button>
-          <button onClick={handleCancelEdit}>Cancel</button>
+
+      <div className='d-flex mb-3'>
+        <select
+          className='form-select w-25 me-2'
+          value={newQuestionType}
+          onChange={(e) => setNewQuestionType(e.target.value)}
+        >
+          <option value="true-false">True/False</option>
+          <option value="multiple-choice">Multiple Choice</option>
+          <option value="fill-in-blanks">Fill in the Blanks</option>
+        </select>
+        <button className='btn btn-lg btn-secondary' onClick={handleAddQuestion}>Create Question</button>
+      </div>
+      <hr />
+      {questions.map((question: any, index: number) => (
+        <div key={question.id} className="question">
+          <p>Type: {question.type} <span className='float-end'>Points: {question.points}</span></p>
+          <FaTrash onClick={() => handleDeleteQuestion(question.id)} className='float-end text-danger' />
+          <p>Q{index + 1}: {question.text}
+          </p>
+          {question.type === 'multiple-choice' && question.choices && (
+            <ul className='list-group'>
+              {question.choices.map((choice: any) => (
+                <li key={choice.id} className='list-group-item w-25' style={{ color: choice.isCorrect ? 'green' : 'black' }}>
+                  {choice.text}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {question.type === 'true-false' && (
+            <ul className='list-group'>
+              <li className='list-group-item w-25' style={{ color: question.answer === true ? 'green' : 'black' }}>True</li>
+              <li className='list-group-item w-25' style={{ color: question.answer === false ? 'green' : 'black' }}>False</li>
+            </ul>
+          )}
+
+          {question.type === 'fill-in-blanks' && question.blanks &&(
+            <ul className='list-group'>
+              {question.blanks.map((blank :any) =>(
+                <li key={blank.id} className='list-group-item w-25'>
+                  {blank.text}
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <button className='btn btn-secondary mt-2' onClick={() => handleEditQuestion(question.id)}>Edit</button>
+          <hr />
         </div>
-      ) : (
-        questions.map((question: any, index: number) => (
-          <div key={question.id} className="question">
-            <p>Q{index + 1}: {question.text}</p>
-            <FaTrash onClick={() => handleDeleteQuestion(question.id)} className='float-end text-danger'/>
-            <div className="d-flex">
-              <p>Type: {question.type}</p>
-            </div>
-            <p>Points: {question.points}</p>
-            <button className='btn btn-secondary mb-3' onClick={() => handleEditQuestion(question.id)}>Edit</button>
-          </div>
-        ))
-      )}
+      ))}
     </div>
   );
-};
+}

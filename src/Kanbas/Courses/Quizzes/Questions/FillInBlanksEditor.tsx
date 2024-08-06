@@ -1,41 +1,69 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Editor from 'react-simple-wysiwyg'; 
+import { addQuestion } from './reducer'; // Import the addQuestion action
+
+const initialState = {
+  title: '',
+  points: 0,
+  question: '',
+  blanks: [{ id: 1, text: '' }],
+  nextId: 2
+};
 
 export default function FillInBlanksEditor() {
-    const cid = useParams();
-  const [title, setTitle] = useState(''); 
-  const [points, setPoints] = useState(0); 
-  const [question, setQuestion] = useState(''); 
-  const [blanks, setBlanks] = useState<string[]>(['']); 
-  const navigate = useNavigate(); 
+  const { cid, id } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [formState, setFormState] = useState(initialState);
 
-  const addBlank = () => {
-    setBlanks([...blanks, '']); 
-  };
-
-  const removeBlank = (index: number) => {
-    setBlanks(blanks.filter((_, i) => i !== index)); 
+  const handleFieldChange = (field: string, value: any) => {
+    setFormState(prevState => ({
+      ...prevState,
+      [field]: value
+    }));
   };
 
   const handleBlankChange = (index: number, value: string) => {
-    const updatedBlanks = blanks.map((blank, i) => (i === index ? value : blank));
-    setBlanks(updatedBlanks); 
+    const updatedBlanks = formState.blanks.map((blank, idx) =>
+      idx === index ? { ...blank, text: value } : blank
+    );
+    setFormState(prevState => ({
+      ...prevState,
+      blanks: updatedBlanks
+    }));
+  };
+
+  const addBlank = () => {
+    setFormState(prevState => ({
+      ...prevState,
+      blanks: [...prevState.blanks, { id: prevState.nextId, text: '' }],
+      nextId: prevState.nextId + 1
+    }));
+  };
+
+  const removeBlank = (index: number) => {
+    const updatedBlanks = formState.blanks.filter((_, idx) => idx !== index);
+    setFormState(prevState => ({
+      ...prevState,
+      blanks: updatedBlanks
+    }));
   };
 
   const handleSave = () => {
     const questionData = {
-      title,
-      points,
-      question,
-      blanks: blanks.map(blank => blank.trim().toLowerCase()), 
+      id: id,
+      type: 'fill-in-blanks',
+      title: formState.title,
+      points: formState.points,
+      text: formState.question,
+      blanks: formState.blanks.map(blank => ({ ...blank, text: blank.text.toLowerCase() })) // Convert blanks to lowercase
     };
-    console.log('Saving question:', questionData);
-    // save logic
-    navigate("Questions/"); 
+
+    dispatch(addQuestion(questionData)); // Dispatch the action to save the question
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`); // Redirect to QuizQuestionsEditor
   };
-
-
 
   return (
     <div>
@@ -46,8 +74,8 @@ export default function FillInBlanksEditor() {
           <input 
             type="text" 
             className='form-control'
-            value={title} 
-            onChange={(e) => setTitle(e.target.value)} 
+            value={formState.title} 
+            onChange={(e) => handleFieldChange('title', e.target.value)} 
             placeholder="Enter question title..."
           />
         </label>
@@ -59,8 +87,8 @@ export default function FillInBlanksEditor() {
           <input 
             type="number" 
             className='form-control'
-            value={points} 
-            onChange={(e) => setPoints(Number(e.target.value))} 
+            value={formState.points} 
+            onChange={(e) => handleFieldChange('points', Number(e.target.value))} 
             placeholder="Enter points..."
           />
         </label>
@@ -70,8 +98,8 @@ export default function FillInBlanksEditor() {
         <label>
           Question
           <Editor 
-            value={question} 
-            onChange={(e) => setQuestion(e.target.value)} 
+            value={formState.question} 
+            onChange={(e) => handleFieldChange('question', e.target.value)} 
           />
         </label>
       </div>
@@ -79,12 +107,12 @@ export default function FillInBlanksEditor() {
       <div>
         <label>
           Blanks (Possible Correct Answers)
-          {blanks.map((blank, index) => (
+          {formState.blanks.map((blank, index) => (
             <div key={index} className='d-flex mb-2'>
               <input
                 type="text"
                 className='form-control w-50 me-2'
-                value={blank}
+                value={blank.text}
                 onChange={(e) => handleBlankChange(index, e.target.value)}
                 placeholder="Enter a possible correct answer..."
               />
@@ -113,7 +141,6 @@ export default function FillInBlanksEditor() {
         >
           Cancel
         </Link>
-
       </div>
     </div>
   );
