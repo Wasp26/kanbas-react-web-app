@@ -71,7 +71,7 @@ export default function TrueFalseEditor() {
             type="number" 
             className='form-control'
             value={formState.points} 
-            onChange={(e) => handleFieldChange('points', e.target.value)} 
+            onChange={(e) => handleFieldChange('points', Number(e.target.value))} 
             placeholder="Enter points..."
           />
         </label>
@@ -82,7 +82,7 @@ export default function TrueFalseEditor() {
           Question
           <Editor 
             value={formState.question} 
-            onChange={(e) => handleFieldChange('question',Number(e.target.value))} 
+            onChange={(e) => handleFieldChange('question',e.target.value)} 
           />
         </label>
       </div>

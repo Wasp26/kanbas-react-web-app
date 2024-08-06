@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import Editor from 'react-simple-wysiwyg';
-import { addQuestion } from './reducer'; // Import the addQuestion action
+import { addQuestion } from './reducer'; 
 
 const initialState = {
   title: '',
@@ -13,7 +13,7 @@ const initialState = {
 };
 
 export default function MultipleChoiceEditor() {
-  const { cid, id } = useParams(); // Get id from URL parameters
+  const { cid, id } = useParams(); 
   const [formState, setFormState] = useState(initialState);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ export default function MultipleChoiceEditor() {
 
   const handleSave = () => {
     const questionData = {
-      id: id, // Use the id from URL parameters
+      id: id, 
       type: 'multiple-choice',
       title: formState.title,
       points: formState.points,
@@ -68,8 +68,8 @@ export default function MultipleChoiceEditor() {
       choices: formState.choices
     };
 
-    dispatch(addQuestion(questionData)); // Dispatch the action to save the question
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`); // Redirect to QuizQuestionsEditor
+    dispatch(addQuestion(questionData));
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`); 
   };
 
   return (

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Editor from 'react-simple-wysiwyg'; 
-import { addQuestion } from './reducer'; // Import the addQuestion action
+import { addQuestion } from './reducer'; 
 
 const initialState = {
   title: '',
@@ -58,11 +58,11 @@ export default function FillInBlanksEditor() {
       title: formState.title,
       points: formState.points,
       text: formState.question,
-      blanks: formState.blanks.map(blank => ({ ...blank, text: blank.text.toLowerCase() })) // Convert blanks to lowercase
+      blanks: formState.blanks.map(blank => ({ ...blank, text: blank.text.toLowerCase() })) 
     };
 
-    dispatch(addQuestion(questionData)); // Dispatch the action to save the question
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`); // Redirect to QuizQuestionsEditor
+    dispatch(addQuestion(questionData)); 
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`);
   };
 
   return (
