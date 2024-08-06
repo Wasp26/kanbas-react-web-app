@@ -95,7 +95,7 @@ export default function TrueFalseEditor() {
       <hr />
       <div>
         <button className='btn btn-danger me-3' onClick={handleSave}>Save/Update Question</button>
-        <Link className='btn btn-secondary'  to={`/Kanbas/Courses/${cid}/Quizzes/create/Questions`}>Cancel</Link>
+        <Link className='btn btn-secondary'  to={`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`}>Cancel</Link>
       </div>
     </div>
   );

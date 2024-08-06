@@ -125,7 +125,7 @@ export default function MultipleChoiceEditor() {
         </button>
         <Link 
           className='btn btn-secondary'  
-          to={`/Kanbas/Courses/${cid}/Quizzes/create/Questions`}
+          to={`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`}
         >
           Cancel
         </Link>
