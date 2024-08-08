@@ -25,6 +25,7 @@ const questionsSlice = createSlice({
       state.questions = state.questions.filter((q: any) => q.id !== action.payload);
     }
   }
+  
 });
 
 export const { addQuestion, updateQuestion, setQuestions, deleteQuestion } = questionsSlice.actions;

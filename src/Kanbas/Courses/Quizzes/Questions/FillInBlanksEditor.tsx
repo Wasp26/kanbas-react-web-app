@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Editor from 'react-simple-wysiwyg'; 
-import { addQuestion } from './reducer'; 
+import * as client from './client';
+import { addQuestion, updateQuestion } from './reducer';
 
 const initialState = {
   title: '',
@@ -34,7 +35,18 @@ export default function FillInBlanksEditor() {
       blanks: updatedBlanks
     }));
   };
-
+  const questions = useSelector((state: any) => state.questions.questions);
+  useEffect(()=>{
+    if (id){
+      const existingQuestion = questions.find((q: any) => q.id === id);
+      if(existingQuestion){
+        setFormState({
+          ...existingQuestion,
+          nextId:existingQuestion.blanks.length + 1
+        })
+      }
+    }
+  })
   const addBlank = () => {
     setFormState(prevState => ({
       ...prevState,
@@ -51,9 +63,10 @@ export default function FillInBlanksEditor() {
     }));
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    const newQuestionId = new Date().getTime().toString();
     const questionData = {
-      id: id,
+      id: newQuestionId,
       type: 'fill-in-blanks',
       title: formState.title,
       points: formState.points,
@@ -61,8 +74,20 @@ export default function FillInBlanksEditor() {
       blanks: formState.blanks.map(blank => ({ ...blank, text: blank.text.toLowerCase() })) 
     };
 
-    dispatch(addQuestion(questionData)); 
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`);
+    try{
+      if(id){
+        await client.updateQuestion( id,questionData);
+        dispatch(updateQuestion(questionData));
+      }else{
+        await client.createQuestion(questionData);
+        dispatch(addQuestion(questionData));
+
+      }
+      navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`); 
+    }
+    catch(error){
+      console.error("failed to save", error);
+    }
   };
 
   return (

@@ -51,9 +51,12 @@ export default function QuizEditor({
           }
         />
         <Route path="Questions/" element={<QuizQuestionsEditor />} />
+        <Route path="Questions/edit/true-false/new" element={<TrueFalseEditor />} />
         <Route path="Questions/edit/true-false/:id" element={<TrueFalseEditor />} />
-          <Route path="Questions/edit/multiple-choice/:id" element={<MultipleChoiceEditor />} />
-          <Route path="Questions/edit/fill-in-blanks/:id" element={<FillInBlanksEditor />} />
+        <Route path="Questions/edit/fill-in-blanks/new" element={<FillInBlanksEditor />} />
+        <Route path="Questions/edit/fill-in-blanks/:id" element={<FillInBlanksEditor />} />
+        <Route path="Questions/edit/multiple-choice/new" element={<MultipleChoiceEditor />} />
+        <Route path="Questions/edit/multiple-choice/:id" element={<MultipleChoiceEditor />} />
       </Routes>
     </div>
   );

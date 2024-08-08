@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaTrash } from 'react-icons/fa6';
-import { deleteQuestion } from './reducer';
+import { deleteQuestion, setQuestions } from './reducer';
+import * as client from './client';
 
 export default function QuizQuestionsEditor() {
   const [newQuestionType, setNewQuestionType] = useState('multiple-choice');
@@ -10,9 +11,14 @@ export default function QuizQuestionsEditor() {
   const questions = useSelector((state: any) => state.questions.questions);
   const navigate = useNavigate();
 
+
+  const fetchQuestions = async () => {
+    const questions = await client.fetchAllQuestions();
+    dispatch(setQuestions(questions));
+  };
+
   const handleAddQuestion = () => {
-    const newQuestionId = new Date().getTime().toString();
-    navigate(`./edit/${newQuestionType}/${newQuestionId}`);
+    navigate(`./edit/${newQuestionType}/new`);
   };
 
   const handleEditQuestion = (id: string) => {
@@ -23,10 +29,15 @@ export default function QuizQuestionsEditor() {
     }
   };
 
-  const handleDeleteQuestion = (id: string) => {
-    dispatch(deleteQuestion(id));
+  const handleDeleteQuestion = async (id: string) => {
+   await client.deleteQuestion(id);
+   dispatch(deleteQuestion(id));
   };
 
+  useEffect(() => {
+    fetchQuestions();
+  }, []);
+ 
   const totalQuestions = questions.length;
   const totalPoints = questions.reduce((sum: number, question: any) => sum + question.points, 0);
 

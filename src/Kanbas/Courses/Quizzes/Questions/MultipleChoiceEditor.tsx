@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Editor from 'react-simple-wysiwyg';
-import { addQuestion } from './reducer'; 
+import * as client from './client';
+import { addQuestion, updateQuestion } from './reducer';
 
 const initialState = {
   title: '',
   points: 0,
   question: '',
   choices: [{ id: 1, text: '', isCorrect: false }],
-  nextId: 2
+  nextId: 2,
+  type: 'multiple-choice'
 };
 
 export default function MultipleChoiceEditor() {
@@ -58,19 +60,46 @@ export default function MultipleChoiceEditor() {
     }));
   };
 
-  const handleSave = () => {
+  const questions = useSelector((state: any) => state.questions.questions);
+
+  useEffect(() => {
+    if (id) {
+      const existingQuestion = questions.find((q: any) => q.id === id);
+      if (existingQuestion) {
+        setFormState({
+          ...existingQuestion,
+          nextId: existingQuestion.choices.length + 1 
+        });
+      }
+    }
+  }, [id, questions]);
+  
+
+  const handleSave = async () => {
+    const newQuestionId = new Date().getTime().toString();
     const questionData = {
-      id: id, 
-      type: 'multiple-choice',
+      id: newQuestionId,
       title: formState.title,
       points: formState.points,
       text: formState.question,
-      choices: formState.choices
+      choices: formState.choices,
+      type: formState.type
     };
 
-    dispatch(addQuestion(questionData));
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`); 
-  };
+    try{
+      if(id){
+        await client.updateQuestion(id, questionData);
+        dispatch(updateQuestion(questionData));
+      }else{
+        await client.createQuestion(questionData);
+        dispatch(addQuestion(questionData));
+      }
+      navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`); 
+    }
+    catch(error){
+      console.error("failed to save", error);
+    }
+};
 
   return (
     <div>
