@@ -1,21 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
 import { FaTrash } from 'react-icons/fa6';
-import { deleteQuestion, setQuestions } from './reducer';
-import * as client from './client';
 
-export default function QuizQuestionsEditor() {
+export default function QuizQuestionsEditor({
+  quizDetails,
+  setQuizDetails,
+}:{
+  quizDetails: any;
+  setQuizDetails: (quiz:any) => void;
+}) {
   const [newQuestionType, setNewQuestionType] = useState('multiple-choice');
-  const dispatch = useDispatch();
-  const questions = useSelector((state: any) => state.questions.questions);
+  const questions = quizDetails.questions || [];
   const navigate = useNavigate();
-
-
-  const fetchQuestions = async () => {
-    const questions = await client.fetchAllQuestions();
-    dispatch(setQuestions(questions));
-  };
 
   const handleAddQuestion = () => {
     navigate(`./edit/${newQuestionType}/new`);
@@ -29,15 +25,11 @@ export default function QuizQuestionsEditor() {
     }
   };
 
-  const handleDeleteQuestion = async (id: string) => {
-   await client.deleteQuestion(id);
-   dispatch(deleteQuestion(id));
+  const handleDeleteQuestion = (id: string) => {
+    const updatedQuestions = questions.filter((q: any) => q.id !== id);
+    setQuizDetails({ ...quizDetails, questions: updatedQuestions });
   };
 
-  useEffect(() => {
-    fetchQuestions();
-  }, []);
- 
   const totalQuestions = questions.length;
   const totalPoints = questions.reduce((sum: number, question: any) => sum + question.points, 0);
 
@@ -46,7 +38,7 @@ export default function QuizQuestionsEditor() {
       <div><h2>QUESTIONS EDITOR</h2>
         <span className='float-end'>
           <label className='me-3'> Questions: {totalQuestions}</label>
-          <label >Points: {totalPoints}</label>
+          <label>Points: {totalPoints}</label>
         </span>
       </div>
 
@@ -67,8 +59,7 @@ export default function QuizQuestionsEditor() {
         <div key={question.id} className="question">
           <p>Type: {question.type} <span className='float-end'>Points: {question.points}</span></p>
           <FaTrash onClick={() => handleDeleteQuestion(question.id)} className='float-end text-danger' />
-          <p>Q{index + 1}: {question.text}
-          </p>
+          <p>Q{index + 1}: {question.text}</p>
           {question.type === 'multiple-choice' && question.choices && (
             <ul className='list-group'>
               {question.choices.map((choice: any) => (
@@ -86,9 +77,9 @@ export default function QuizQuestionsEditor() {
             </ul>
           )}
 
-          {question.type === 'fill-in-blanks' && question.blanks &&(
+          {question.type === 'fill-in-blanks' && question.blanks && (
             <ul className='list-group'>
-              {question.blanks.map((blank :any) =>(
+              {question.blanks.map((blank: any) => (
                 <li key={blank.id} className='list-group-item w-25'>
                   {blank.text}
                 </li>

@@ -1,65 +1,57 @@
-
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import Editor from 'react-simple-wysiwyg'; 
-import * as client from './client';
-import { addQuestion, updateQuestion } from './reducer';
+import Editor from 'react-simple-wysiwyg';
 
 const initialState = {
-    title : '',
-    points: 0,
-    question: '',
-    answer: false,
-}
+  title: '',
+  points: 0,
+  question: '',
+  answer: false,
+};
 
-export default function TrueFalseEditor() {
-    const {cid, id} = useParams();
-    const [formState, setFormState] = useState(initialState);
-    const dispatch = useDispatch();
+export default function TrueFalseEditor({
+  quizDetails,
+  setQuizDetails,
+}: {
+  quizDetails: any;
+  setQuizDetails: (quiz: any) => void;
+}) {
+  const { cid, id } = useParams();
+  const [formState, setFormState] = useState(initialState);
+  const navigate = useNavigate();
 
-  const navigate = useNavigate(); 
+  const handleSave = () => {
+    const newQuestionId = new Date().getTime().toString();
+    const questionData = {
+      id: id || newQuestionId,
+      type: 'true-false',
+      title: formState.title,
+      points: formState.points,
+      text: formState.question,
+      answer: formState.answer,
+    };
 
-  const handleSave = async () => {
-  const newQuestionId = new Date().getTime().toString();
-   const questionData = {
-    id: newQuestionId,
-    type: 'true-false',
-    title: formState.title,
-    points: formState.points,
-    text: formState.question,
-    answer: formState.answer
-   }
+    const updatedQuestions = id
+      ? quizDetails.questions.map((q: any) => (q.id === id ? questionData : q))
+      : [...(quizDetails.questions || []), questionData];
 
-   try{
-    if(id){
-      await client.updateQuestion(id,questionData);
-      dispatch(updateQuestion(questionData));
-    }else{
-      await client.createQuestion(questionData);
-      dispatch(addQuestion(questionData));
-    }
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`); 
-  }
-  catch(error){
-    console.error("failed to save", error);
-  }
+    setQuizDetails({ ...quizDetails, questions: updatedQuestions });
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`);
   };
 
   const handleFieldChange = (field: any, value: any) => {
-        setFormState(prevState =>({
-            ...prevState,
-            [field]: value
-        }))
-  }
+    setFormState((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+  };
 
-  const handleAnswer = (checked: any) =>{
-        setFormState(prevState =>({
-            ...prevState,
-            answer : checked
-        }))
-  }
-
+  const handleAnswer = (checked: any) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      answer: checked,
+    }));
+  };
 
   return (
     <div>
@@ -67,11 +59,11 @@ export default function TrueFalseEditor() {
       <div>
         <label>
           Title
-          <input 
-            type="text" 
-            className='form-control'
-            value={formState.title} 
-            onChange={(e) => handleFieldChange('title', e.target.value)} 
+          <input
+            type="text"
+            className="form-control"
+            value={formState.title}
+            onChange={(e) => handleFieldChange('title', e.target.value)}
             placeholder="Enter question title..."
           />
         </label>
@@ -80,11 +72,11 @@ export default function TrueFalseEditor() {
       <div>
         <label>
           Points
-          <input 
-            type="number" 
-            className='form-control'
-            value={formState.points} 
-            onChange={(e) => handleFieldChange('points', Number(e.target.value))} 
+          <input
+            type="number"
+            className="form-control"
+            value={formState.points}
+            onChange={(e) => handleFieldChange('points', Number(e.target.value))}
             placeholder="Enter points..."
           />
         </label>
@@ -93,9 +85,9 @@ export default function TrueFalseEditor() {
       <div>
         <label>
           Question
-          <Editor 
-            value={formState.question} 
-            onChange={(e) => handleFieldChange('question',e.target.value)} 
+          <Editor
+            value={formState.question}
+            onChange={(e) => handleFieldChange('question', e.target.value)}
           />
         </label>
       </div>
@@ -103,29 +95,29 @@ export default function TrueFalseEditor() {
       <div>
         <label>
           Correct Answer
-          <div className='form-check'>
-            <input 
-              type="radio" 
-              id="trueOption" 
-              name="answer" 
-              checked={formState.answer} 
-              onChange={() => handleAnswer(true)} 
-              className='form-check-input'
+          <div className="form-check">
+            <input
+              type="radio"
+              id="trueOption"
+              name="answer"
+              checked={formState.answer}
+              onChange={() => handleAnswer(true)}
+              className="form-check-input"
             />
-            <label htmlFor="trueOption" className='form-check-label'>
+            <label htmlFor="trueOption" className="form-check-label">
               True
             </label>
           </div>
-          <div className='form-check'>
-            <input 
-              type="radio" 
-              id="falseOption" 
-              name="answer" 
-              checked={!formState.answer} 
-              onChange={() => handleAnswer(false)} 
-              className='form-check-input'
+          <div className="form-check">
+            <input
+              type="radio"
+              id="falseOption"
+              name="answer"
+              checked={!formState.answer}
+              onChange={() => handleAnswer(false)}
+              className="form-check-input"
             />
-            <label htmlFor="falseOption" className='form-check-label'>
+            <label htmlFor="falseOption" className="form-check-label">
               False
             </label>
           </div>
@@ -133,8 +125,12 @@ export default function TrueFalseEditor() {
       </div>
       <hr />
       <div>
-        <button className='btn btn-danger me-3' onClick={handleSave}>Save/Update Question</button>
-        <Link className='btn btn-secondary'  to={`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`}>Cancel</Link>
+        <button className="btn btn-danger me-3" onClick={handleSave}>
+          Save/Update Question
+        </button>
+        <Link className="btn btn-secondary" to={`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`}>
+          Cancel
+        </Link>
       </div>
     </div>
   );

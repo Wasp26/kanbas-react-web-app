@@ -1,28 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import Editor from 'react-simple-wysiwyg'; 
-import * as client from './client';
-import { addQuestion, updateQuestion } from './reducer';
+import Editor from 'react-simple-wysiwyg';
 
 const initialState = {
   title: '',
   points: 0,
   question: '',
   blanks: [{ id: 1, text: '' }],
-  nextId: 2
+  nextId: 2,
 };
 
-export default function FillInBlanksEditor() {
+export default function FillInBlanksEditor({
+  quizDetails,
+  setQuizDetails,
+}: {
+  quizDetails: any;
+  setQuizDetails: (quiz: any) => void;
+}) {
   const { cid, id } = useParams();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [formState, setFormState] = useState(initialState);
 
+  useEffect(() => {
+    if (id) {
+      const existingQuestion = quizDetails.questions.find((q: any) => q.id === id);
+      if (existingQuestion) {
+        setFormState({
+          ...existingQuestion,
+          nextId: existingQuestion.blanks.length + 1,
+        });
+      }
+    }
+  }, [id, quizDetails.questions]);
+
   const handleFieldChange = (field: string, value: any) => {
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -30,64 +44,51 @@ export default function FillInBlanksEditor() {
     const updatedBlanks = formState.blanks.map((blank, idx) =>
       idx === index ? { ...blank, text: value } : blank
     );
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
-      blanks: updatedBlanks
+      blanks: updatedBlanks,
     }));
   };
-  const questions = useSelector((state: any) => state.questions.questions);
-  useEffect(()=>{
-    if (id){
-      const existingQuestion = questions.find((q: any) => q.id === id);
-      if(existingQuestion){
-        setFormState({
-          ...existingQuestion,
-          nextId:existingQuestion.blanks.length + 1
-        })
-      }
-    }
-  })
+
   const addBlank = () => {
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
-      blanks: [...prevState.blanks, { id: prevState.nextId, text: '' }],
-      nextId: prevState.nextId + 1
+      blanks: [
+        ...prevState.blanks,
+        { id: prevState.nextId, text: '' },
+      ],
+      nextId: prevState.nextId + 1,
     }));
   };
 
   const removeBlank = (index: number) => {
     const updatedBlanks = formState.blanks.filter((_, idx) => idx !== index);
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
-      blanks: updatedBlanks
+      blanks: updatedBlanks,
     }));
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     const newQuestionId = new Date().getTime().toString();
     const questionData = {
-      id: newQuestionId,
+      id: id || newQuestionId,
       type: 'fill-in-blanks',
       title: formState.title,
       points: formState.points,
       text: formState.question,
-      blanks: formState.blanks.map(blank => ({ ...blank, text: blank.text.toLowerCase() })) 
+      blanks: formState.blanks.map((blank) => ({
+        ...blank,
+        text: blank.text.toLowerCase(),
+      })),
     };
 
-    try{
-      if(id){
-        await client.updateQuestion( id,questionData);
-        dispatch(updateQuestion(questionData));
-      }else{
-        await client.createQuestion(questionData);
-        dispatch(addQuestion(questionData));
+    const updatedQuestions = id
+      ? quizDetails.questions.map((q: any) => (q.id === id ? questionData : q))
+      : [...(quizDetails.questions || []), questionData];
 
-      }
-      navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`); 
-    }
-    catch(error){
-      console.error("failed to save", error);
-    }
+    setQuizDetails({ ...quizDetails, questions: updatedQuestions });
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`);
   };
 
   return (
@@ -96,11 +97,11 @@ export default function FillInBlanksEditor() {
       <div>
         <label>
           Title
-          <input 
-            type="text" 
-            className='form-control'
-            value={formState.title} 
-            onChange={(e) => handleFieldChange('title', e.target.value)} 
+          <input
+            type="text"
+            className="form-control"
+            value={formState.title}
+            onChange={(e) => handleFieldChange('title', e.target.value)}
             placeholder="Enter question title..."
           />
         </label>
@@ -109,11 +110,11 @@ export default function FillInBlanksEditor() {
       <div>
         <label>
           Points
-          <input 
-            type="number" 
-            className='form-control'
-            value={formState.points} 
-            onChange={(e) => handleFieldChange('points', Number(e.target.value))} 
+          <input
+            type="number"
+            className="form-control"
+            value={formState.points}
+            onChange={(e) => handleFieldChange('points', Number(e.target.value))}
             placeholder="Enter points..."
           />
         </label>
@@ -122,9 +123,9 @@ export default function FillInBlanksEditor() {
       <div>
         <label>
           Question
-          <Editor 
-            value={formState.question} 
-            onChange={(e) => handleFieldChange('question', e.target.value)} 
+          <Editor
+            value={formState.question}
+            onChange={(e) => handleFieldChange('question', e.target.value)}
           />
         </label>
       </div>
@@ -133,24 +134,24 @@ export default function FillInBlanksEditor() {
         <label>
           Blanks (Possible Correct Answers)
           {formState.blanks.map((blank, index) => (
-            <div key={index} className='d-flex mb-2'>
+            <div key={index} className="d-flex mb-2">
               <input
                 type="text"
-                className='form-control w-50 me-2'
+                className="form-control w-50 me-2"
                 value={blank.text}
                 onChange={(e) => handleBlankChange(index, e.target.value)}
                 placeholder="Enter a possible correct answer..."
               />
-              <button 
-                className='btn btn-danger'
+              <button
+                className="btn btn-danger"
                 onClick={() => removeBlank(index)}
               >
                 Remove
               </button>
             </div>
           ))}
-          <button 
-            className='btn btn-secondary'
+          <button
+            className="btn btn-secondary"
             onClick={addBlank}
           >
             Add Blank
@@ -159,9 +160,11 @@ export default function FillInBlanksEditor() {
       </div>
       <hr />
       <div>
-        <button className='btn btn-danger me-3' onClick={handleSave}>Save/Update Question</button>
-        <Link 
-          className='btn btn-secondary'  
+        <button className="btn btn-danger me-3" onClick={handleSave}>
+          Save/Update Question
+        </button>
+        <Link
+          className="btn btn-secondary"
           to={`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`}
         >
           Cancel

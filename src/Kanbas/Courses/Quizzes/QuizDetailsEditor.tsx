@@ -17,9 +17,10 @@ export default function QuizDetailsEditor({
   const isCreate = pathname.includes("create");
   let qzid = quizDetails._id;
 
-  const saveAndPublishHandler = (e: any) => {
+  console.log(quizDetails.questions);
+  const saveAndPublishHandler = async (e: any) => {
     if (isCreate) {
-      createQuizDetails();
+     qzid = await createQuizDetails();
     } else {
       saveQuizDetails();
     }
