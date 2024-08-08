@@ -62,6 +62,7 @@ export default function Quizzes() {
     dueDate: "2024-07-01",
     availableFrom: "2024-06-01",
     availableUntil: "2024-07-08",
+    questions: [],
   });
 
   const fetchQuizDetails = async (qzid: string) => {
