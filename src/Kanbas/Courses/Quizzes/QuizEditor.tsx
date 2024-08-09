@@ -31,9 +31,12 @@ export default function QuizEditor({
     }
   }, []);
 
+  const questions = quizDetails.questions || [];
+  const totalPoints = questions.reduce((sum: number, question: any) => sum + question.points, 0);
+
   return (
     <div className="ms-3">
-      <div>Points: {quizDetails.points}</div>
+      <div>Points: {totalPoints}</div>
       <hr />
       <QuizEditorNavigation cid={cid as string} qzid={qzid as string} />
       <hr />

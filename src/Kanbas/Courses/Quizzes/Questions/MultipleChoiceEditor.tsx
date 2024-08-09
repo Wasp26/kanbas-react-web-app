@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { Editor, EditorProvider } from 'react-simple-wysiwyg';
+import { BtnBold, BtnBulletList, BtnClearFormatting, BtnItalic, BtnLink, BtnNumberedList, BtnRedo, BtnStrikeThrough, BtnStyles, BtnUnderline, BtnUndo, Editor, EditorProvider, HtmlButton, Separator, Toolbar } from 'react-simple-wysiwyg';
+import { fetchQuizDetails } from '../client';
 
 const initialState = {
   title: '',
@@ -24,16 +25,23 @@ export default function MultipleChoiceEditor({
   const questions = quizDetails.questions || [];
 
   useEffect(() => {
-    if (id) {
-      const existingQuestion = questions.find((q: any) => q.id === id);
-      if (existingQuestion) {
-        setFormState({
-          ...existingQuestion,
-          nextId: existingQuestion.choices.length + 1,
-        });
+    const fetchQuestion = async () => {
+      if (id) {
+        let existingQuestion = questions.find((q: any) => q.id === id);
+        if (!existingQuestion) {
+          const quiz = await fetchQuizDetails(cid as string, quizDetails._id);
+          existingQuestion = quiz.questions.find((q: any) => q.id === id);
+        }else{
+          setFormState({
+            ...existingQuestion,
+            nextId: existingQuestion.choices?.length + 1 || 1,
+          });
+        }
       }
-    }
-  }, [id, questions]);
+    };
+    fetchQuestion();
+  }, [id, questions, cid, quizDetails._id]);
+
 
   const addChoice = () => {
     setFormState(prevState => ({
@@ -69,18 +77,20 @@ export default function MultipleChoiceEditor({
   };
 
   const handleFieldChange = (field: string, value: any) => {
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
       [field]: value
     }));
   };
+
+  
 
   const handleSave = () => {
     const questionData = {
       id: id || new Date().getTime().toString(),
       title: formState.title,
       points: formState.points,
-      text: formState.question,
+      question: formState.question,
       choices: formState.choices,
       type: formState.type
     };
@@ -94,7 +104,7 @@ export default function MultipleChoiceEditor({
   };
 
   return (
-    <EditorProvider>
+
   <div>
       <h2>Multiple Choice Question Editor</h2>
       <div>
@@ -126,12 +136,30 @@ export default function MultipleChoiceEditor({
       <div>
         <label>
           Question
-        
-          <Editor 
-            value={formState.question} 
-            onChange={(e: any) => handleFieldChange('question', e.target.value)} 
-          />
-      
+        <EditorProvider>
+        <Editor value={formState.question} 
+            onChange={(e) => handleFieldChange('question', e.target.value)} >
+           <Toolbar>
+          <BtnUndo />
+          <BtnRedo />
+          <Separator />
+          <BtnBold />
+          <BtnItalic />
+          <BtnUnderline />
+          <BtnStrikeThrough />
+          <Separator />
+          <BtnNumberedList />
+          <BtnBulletList />
+          <Separator />
+          <BtnLink />
+          <BtnClearFormatting />
+          <HtmlButton />
+          <Separator />
+          <BtnStyles />
+        </Toolbar>
+
+              </Editor>
+        </EditorProvider>
         </label>
       </div>
       <br />
@@ -142,11 +170,13 @@ export default function MultipleChoiceEditor({
             <input
               type="radio"
               className='me-3'
+              name = "wd-mcq-choice-radio"
               checked={choice.isCorrect}
               onChange={() => handleCorrectChoiceChange(choice.id)}
             />
             <textarea 
               value={choice.text} 
+              name="wd-mcq-choice-input"
               className='form-control w-25 me-3'
               onChange={(e) => handleChoiceTextChange(choice.id, e.target.value)} 
               placeholder="Enter choice text here..."
@@ -183,7 +213,7 @@ export default function MultipleChoiceEditor({
         </Link>
       </div>
     </div>
-    </EditorProvider>
+
   
   );
 }

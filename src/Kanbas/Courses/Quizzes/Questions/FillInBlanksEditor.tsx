@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Editor from 'react-simple-wysiwyg';
+import { fetchQuizDetails } from '../client';
 
 const initialState = {
   title: '',
@@ -20,21 +21,30 @@ export default function FillInBlanksEditor({
   const { cid, id } = useParams();
   const navigate = useNavigate();
   const [formState, setFormState] = useState(initialState);
+  const questions = quizDetails.questions || [];
 
   useEffect(() => {
-    if (id) {
-      const existingQuestion = quizDetails.questions.find((q: any) => q.id === id);
-      if (existingQuestion) {
-        setFormState({
-          ...existingQuestion,
-          nextId: existingQuestion.blanks.length + 1,
-        });
+    const fetchQuestion = async () => {
+      if (id) {
+        let existingQuestion = questions.find((q: any) => q.id === id);
+        if (!existingQuestion) {
+          const quiz = await fetchQuizDetails(cid as string, quizDetails._id);
+          existingQuestion = quiz.questions.find((q: any) => q.id === id);
+        }
+        else {
+          setFormState({
+            ...existingQuestion,
+            nextId: (existingQuestion.blanks?.length || 0) + 1,
+          });
+        } 
       }
-    }
-  }, [id, quizDetails.questions]);
+    };
+
+    fetchQuestion();
+  }, [id, questions, cid, quizDetails._id]);
 
   const handleFieldChange = (field: string, value: any) => {
-    setFormState((prevState) => ({
+    setFormState(prevState => ({
       ...prevState,
       [field]: value,
     }));
@@ -44,14 +54,14 @@ export default function FillInBlanksEditor({
     const updatedBlanks = formState.blanks.map((blank, idx) =>
       idx === index ? { ...blank, text: value } : blank
     );
-    setFormState((prevState) => ({
+    setFormState(prevState => ({
       ...prevState,
       blanks: updatedBlanks,
     }));
   };
 
   const addBlank = () => {
-    setFormState((prevState) => ({
+    setFormState(prevState => ({
       ...prevState,
       blanks: [
         ...prevState.blanks,
@@ -63,32 +73,31 @@ export default function FillInBlanksEditor({
 
   const removeBlank = (index: number) => {
     const updatedBlanks = formState.blanks.filter((_, idx) => idx !== index);
-    setFormState((prevState) => ({
+    setFormState(prevState => ({
       ...prevState,
       blanks: updatedBlanks,
     }));
   };
 
   const handleSave = () => {
-    const newQuestionId = new Date().getTime().toString();
     const questionData = {
-      id: id || newQuestionId,
-      type: 'fill-in-blanks',
+      id: id || new Date().getTime().toString(),
       title: formState.title,
       points: formState.points,
-      text: formState.question,
-      blanks: formState.blanks.map((blank) => ({
+      question: formState.question,
+      type: "fill-in-blanks",
+      blanks: formState.blanks.map(blank => ({
         ...blank,
         text: blank.text.toLowerCase(),
       })),
     };
 
     const updatedQuestions = id
-      ? quizDetails.questions.map((q: any) => (q.id === id ? questionData : q))
-      : [...(quizDetails.questions || []), questionData];
+      ? questions.map((q: any) => (q.id === id ? questionData : q))
+      : [...questions, questionData];
 
     setQuizDetails({ ...quizDetails, questions: updatedQuestions });
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`);
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/${quizDetails._id}/Questions`);
   };
 
   return (
@@ -165,7 +174,7 @@ export default function FillInBlanksEditor({
         </button>
         <Link
           className="btn btn-secondary"
-          to={`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`}
+          to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${quizDetails._id}/Questions`}
         >
           Cancel
         </Link>

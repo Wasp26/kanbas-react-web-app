@@ -31,14 +31,11 @@ export default function QuizQuestionsEditor({
   };
 
   const totalQuestions = questions.length;
-  const totalPoints = questions.reduce((sum: number, question: any) => sum + question.points, 0);
-
   return (
     <div>
       <div><h2>QUESTIONS EDITOR</h2>
         <span className='float-end'>
           <label className='me-3'> Questions: {totalQuestions}</label>
-          <label>Points: {totalPoints}</label>
         </span>
       </div>
 
@@ -59,7 +56,7 @@ export default function QuizQuestionsEditor({
         <div key={question.id} className="question">
           <p>Type: {question.type} <span className='float-end'>Points: {question.points}</span></p>
           <FaTrash onClick={() => handleDeleteQuestion(question.id)} className='float-end text-danger' />
-          <p>Q{index + 1}: {question.text}</p>
+          <p>Q{index + 1}: {question.question}</p>
           {question.type === 'multiple-choice' && question.choices && (
             <ul className='list-group'>
               {question.choices.map((choice: any) => (

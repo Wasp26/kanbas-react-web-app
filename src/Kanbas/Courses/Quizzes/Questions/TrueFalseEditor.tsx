@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Editor from 'react-simple-wysiwyg';
+import { fetchQuizDetails } from '../client';
 
 const initialState = {
   title: '',
@@ -19,25 +20,27 @@ export default function TrueFalseEditor({
   const { cid, id } = useParams();
   const [formState, setFormState] = useState(initialState);
   const navigate = useNavigate();
+  const questions = quizDetails.questions || [];
 
-  const handleSave = () => {
-    const newQuestionId = new Date().getTime().toString();
-    const questionData = {
-      id: id || newQuestionId,
-      type: 'true-false',
-      title: formState.title,
-      points: formState.points,
-      text: formState.question,
-      answer: formState.answer,
+  useEffect(() => {
+    const fetchQuestion = async () => {
+      if (id) {
+        let existingQuestion = questions.find((q: any) => q.id === id);
+        if (!existingQuestion) {
+          const quiz = await fetchQuizDetails(cid as string, quizDetails._id);
+          existingQuestion = quiz.questions.find((q: any) => q.id === id);
+        }else{
+          setFormState({
+            ...existingQuestion,
+            nextId: existingQuestion.choices?.length + 1 || 1,
+          });
+        }
+      }
     };
+    fetchQuestion();
+  }, [id, questions, cid, quizDetails._id]);
 
-    const updatedQuestions = id
-      ? quizDetails.questions.map((q: any) => (q.id === id ? questionData : q))
-      : [...(quizDetails.questions || []), questionData];
-
-    setQuizDetails({ ...quizDetails, questions: updatedQuestions });
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`);
-  };
+  
 
   const handleFieldChange = (field: any, value: any) => {
     setFormState((prevState) => ({
@@ -52,6 +55,24 @@ export default function TrueFalseEditor({
       answer: checked,
     }));
   };
+
+  const handleSave = () => {
+    const newQuestionId = new Date().getTime().toString();
+    const questionData = {
+      id: id || newQuestionId,
+      type: 'true-false',
+      title: formState.title,
+      points: formState.points,
+      question: formState.question,
+      answer: formState.answer,
+    };
+    const updatedQuestions = id
+    ? questions.map((q: any) => (q.id === id ? questionData : q))
+    : [...questions, questionData];
+
+  setQuizDetails({ ...quizDetails, questions: updatedQuestions });
+  navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/${quizDetails._id}/Questions`);
+  }
 
   return (
     <div>
@@ -128,7 +149,7 @@ export default function TrueFalseEditor({
         <button className="btn btn-danger me-3" onClick={handleSave}>
           Save/Update Question
         </button>
-        <Link className="btn btn-secondary" to={`/Kanbas/Courses/${cid}/Quizzes/Editor/create/Questions`}>
+        <Link className="btn btn-secondary" to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${quizDetails._id}/Questions`}>
           Cancel
         </Link>
       </div>
