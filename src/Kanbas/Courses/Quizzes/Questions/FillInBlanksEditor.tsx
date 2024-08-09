@@ -134,7 +134,7 @@ export default function FillInBlanksEditor({
           Question
           <Editor
             value={formState.question}
-            onChange={(e) => handleFieldChange('question', e.target.value)}
+            onChange={(e) => handleFieldChange('question', e.target.value.toString().replace(/<br\s*\/?>/gi, ''))}
           />
         </label>
       </div>

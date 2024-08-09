@@ -19,7 +19,7 @@ export default function MultipleChoiceEditor({
   quizDetails: any;
   setQuizDetails: (quiz: any) => void;
 }) {
-  const { cid, id } = useParams(); 
+  const { cid, id } = useParams();
   const [formState, setFormState] = useState(initialState);
   const navigate = useNavigate();
   const questions = quizDetails.questions || [];
@@ -31,7 +31,7 @@ export default function MultipleChoiceEditor({
         if (!existingQuestion) {
           const quiz = await fetchQuizDetails(cid as string, quizDetails._id);
           existingQuestion = quiz.questions.find((q: any) => q.id === id);
-        }else{
+        } else {
           setFormState({
             ...existingQuestion,
             nextId: existingQuestion.choices?.length + 1 || 1,
@@ -61,7 +61,7 @@ export default function MultipleChoiceEditor({
   const handleChoiceTextChange = (choiceId: number, text: string) => {
     setFormState(prevState => ({
       ...prevState,
-      choices: prevState.choices.map(choice => 
+      choices: prevState.choices.map(choice =>
         choice.id === choiceId ? { ...choice, text } : choice
       )
     }));
@@ -70,7 +70,7 @@ export default function MultipleChoiceEditor({
   const handleCorrectChoiceChange = (choiceId: number) => {
     setFormState(prevState => ({
       ...prevState,
-      choices: prevState.choices.map(choice => 
+      choices: prevState.choices.map(choice =>
         ({ ...choice, isCorrect: choice.id === choiceId })
       )
     }));
@@ -82,8 +82,6 @@ export default function MultipleChoiceEditor({
       [field]: value
     }));
   };
-
-  
 
   const handleSave = () => {
     const questionData = {
@@ -105,16 +103,16 @@ export default function MultipleChoiceEditor({
 
   return (
 
-  <div>
+    <div>
       <h2>Multiple Choice Question Editor</h2>
       <div>
         <label>
           Title
-          <input 
-            type="text" 
+          <input
+            type="text"
             className='form-control'
-            value={formState.title} 
-            onChange={(e) => handleFieldChange('title', e.target.value)} 
+            value={formState.title}
+            onChange={(e) => handleFieldChange('title', e.target.value)}
             placeholder="Enter question title..."
           />
         </label>
@@ -123,11 +121,11 @@ export default function MultipleChoiceEditor({
         <br />
         <label>
           Points
-          <input 
-            type="number" 
+          <input
+            type="number"
             className='form-control'
-            value={formState.points} 
-            onChange={(e) => handleFieldChange('points', Number(e.target.value))} 
+            value={formState.points}
+            onChange={(e) => handleFieldChange('points', Number(e.target.value))}
             placeholder="Enter points..."
           />
         </label>
@@ -136,30 +134,30 @@ export default function MultipleChoiceEditor({
       <div>
         <label>
           Question
-        <EditorProvider>
-        <Editor value={formState.question} 
-            onChange={(e) => handleFieldChange('question', e.target.value)} >
-           <Toolbar>
-          <BtnUndo />
-          <BtnRedo />
-          <Separator />
-          <BtnBold />
-          <BtnItalic />
-          <BtnUnderline />
-          <BtnStrikeThrough />
-          <Separator />
-          <BtnNumberedList />
-          <BtnBulletList />
-          <Separator />
-          <BtnLink />
-          <BtnClearFormatting />
-          <HtmlButton />
-          <Separator />
-          <BtnStyles />
-        </Toolbar>
+          <EditorProvider>
+            <Editor value={formState.question}
+              onChange={(e) => handleFieldChange('question', e.target.value.toString().replace(/<br\s*\/?>/gi, ''))} >
+              <Toolbar>
+                <BtnUndo />
+                <BtnRedo />
+                <Separator />
+                <BtnBold />
+                <BtnItalic />
+                <BtnUnderline />
+                <BtnStrikeThrough />
+                <Separator />
+                <BtnNumberedList />
+                <BtnBulletList />
+                <Separator />
+                <BtnLink />
+                <BtnClearFormatting />
+                <HtmlButton />
+                <Separator />
+                <BtnStyles />
+              </Toolbar>
 
-              </Editor>
-        </EditorProvider>
+            </Editor>
+          </EditorProvider>
         </label>
       </div>
       <br />
@@ -170,18 +168,18 @@ export default function MultipleChoiceEditor({
             <input
               type="radio"
               className='me-3'
-              name = "wd-mcq-choice-radio"
+              name="wd-mcq-choice-radio"
               checked={choice.isCorrect}
               onChange={() => handleCorrectChoiceChange(choice.id)}
             />
-            <textarea 
-              value={choice.text} 
+            <textarea
+              value={choice.text}
               name="wd-mcq-choice-input"
               className='form-control w-25 me-3'
-              onChange={(e) => handleChoiceTextChange(choice.id, e.target.value)} 
+              onChange={(e) => handleChoiceTextChange(choice.id, e.target.value)}
               placeholder="Enter choice text here..."
             />
-            <button 
+            <button
               className='btn btn-secondary h-100'
               onClick={() => removeChoice(choice.id)}
             >
@@ -190,7 +188,7 @@ export default function MultipleChoiceEditor({
           </div>
         ))}
         <br />
-        <button 
+        <button
           className='btn btn-secondary'
           onClick={addChoice}
         >
@@ -199,14 +197,14 @@ export default function MultipleChoiceEditor({
       </div>
       <hr />
       <div>
-        <button 
-          className='btn btn-danger me-3' 
+        <button
+          className='btn btn-danger me-3'
           onClick={handleSave}
         >
           Save/Update Question
         </button>
-        <Link 
-          className='btn btn-secondary'  
+        <Link
+          className='btn btn-secondary'
           to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${quizDetails._id}/Questions`}
         >
           Cancel
@@ -214,6 +212,6 @@ export default function MultipleChoiceEditor({
       </div>
     </div>
 
-  
+
   );
 }

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-
+import { BtnBold, BtnBulletList, BtnClearFormatting, BtnItalic, BtnLink, BtnNumberedList, BtnRedo, BtnStrikeThrough, BtnStyles, BtnUnderline, BtnUndo, Editor, EditorProvider, HtmlButton, Separator, Toolbar } from 'react-simple-wysiwyg';
 export default function QuizDetailsEditor({
   quizDetails,
   setQuizDetails,
@@ -49,15 +49,35 @@ export default function QuizDetailsEditor({
         }
       />
       <label htmlFor="wd-quiz-description">Quiz Instructions</label>
-      <textarea
+   
+        <EditorProvider>
+        <Editor
         id="wd-quiz-description"
-        className="form-control"
-        onChange={(e) =>
-          setQuizDetails({ ...quizDetails, description: e.target.value })
-        }
-      >
-        {quizDetails.description}
-      </textarea>
+            value={quizDetails.description}
+            onChange={(e) => setQuizDetails({...quizDetails,description: e.target.value.toString().replace(/<br\s*\/?>/gi, '') })}
+          >
+               <Toolbar>
+                <BtnUndo />
+                <BtnRedo />
+                <Separator />
+                <BtnBold />
+                <BtnItalic />
+                <BtnUnderline />
+                <BtnStrikeThrough />
+                <Separator />
+                <BtnNumberedList />
+                <BtnBulletList />
+                <Separator />
+                <BtnLink />
+                <BtnClearFormatting />
+                <HtmlButton />
+                <Separator />
+                <BtnStyles />
+              </Toolbar> 
+          </Editor>
+        </EditorProvider>
+    
+
       <hr />
       <div className="row form-group w-75 mb-3 mt-5">
         <div className="col">
