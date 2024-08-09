@@ -53,6 +53,7 @@ export default function MCQOptions({
             name="answer"
             className="form-check-input mb-1"
             value={choice.isCorrect ? "true" : "false"}
+            onClick={handleClick}
           />
           <label htmlFor={choice.id} className="form-check-label">
             {choice.text}

@@ -43,10 +43,41 @@ export default function QuizPreview({
               questions={questions}
               attemptDetails={attemptDetails}
               setAttemptDetails={setAttemptDetails}
+              currentQuestionIndex={currentQuestionIndex}
+              setCurrentIndex={setCurrentIndex}
             />
           }
         />
       </Routes>
+
+      <div className="row mb-5">
+        <div className="col-7"></div>
+        <div className="col-4">
+          {currentQuestionIndex > 0 && (
+            <Link
+              to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Question/${
+                questions[currentQuestionIndex - 1].id
+              }`}
+              className="btn btn-secondary me-1"
+            >
+              Previous
+            </Link>
+          )}
+
+          {currentQuestionIndex < questions.length - 1 && (
+            <Link
+              to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Question/${
+                questions[currentQuestionIndex + 1].id
+              }`}
+              className="btn btn-secondary me-1"
+            >
+              Next
+            </Link>
+          )}
+
+          <button className="btn btn-danger float-end">Submit Quiz</button>
+        </div>
+      </div>
 
       <h6>Questions</h6>
       <ul className="list-group">

@@ -1,23 +1,36 @@
 import { useParams } from "react-router";
 import TFOptions from "./TFOptions";
 import MCQOptions from "./MCQOptions";
+import { useEffect } from "react";
 
 export default function QuizQuestion({
   quizDetails,
   questions,
   attemptDetails,
   setAttemptDetails,
+  currentQuestionIndex,
+  setCurrentIndex,
 }: {
   quizDetails: any;
   questions: any[];
   attemptDetails: any;
   setAttemptDetails: (attempt: any) => void;
+  currentQuestionIndex: number;
+  setCurrentIndex: (index: number) => void;
 }) {
   const { cid, qzid, qid } = useParams();
 
   const getQuestionById = () => {
     return questions.filter((question: any) => question.id === qid)[0];
   };
+
+  const getQuestionIndex = () => {
+    return questions.findIndex((question: any) => question.id === qid);
+  };
+
+  useEffect(() => {
+    setCurrentIndex(getQuestionIndex());
+  }, []);
 
   const question = getQuestionById();
 
