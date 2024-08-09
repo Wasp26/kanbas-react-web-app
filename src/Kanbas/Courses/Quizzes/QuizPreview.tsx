@@ -48,22 +48,26 @@ export default function QuizPreview({
         />
       </Routes>
 
-      <h6>Questions</h6>
+    
+        <div className="mt-4">
+        <h6>Questions</h6>
       <ul className="list-group">
         {questions.map((question: any, index: number) => {
           return (
             <li className="list-group-item border-none w-25">
               <RxQuestionMarkCircled className="me-1" />
+              
               <Link
                 to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Question/${question.id}`}
                 className="text-decoration-none text-danger"
               >
-                {question.title}
+                Question {index +1}
               </Link>
             </li>
           );
         })}
       </ul>
+        </div>
     </div>
   );
 }

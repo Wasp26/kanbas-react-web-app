@@ -116,7 +116,7 @@ export default function TrueFalseEditor({
           Question
           <Editor
             value={formState.question}
-            onChange={(e) => handleFieldChange('question', e.target.value.toString().replace(/<br\s*\/?>/gi, ''))}
+            onChange={(e) => handleFieldChange('question', e.target.value)}
           />
         </label>
       </div>

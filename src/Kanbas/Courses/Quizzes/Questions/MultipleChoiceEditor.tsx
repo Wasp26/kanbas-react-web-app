@@ -165,7 +165,7 @@ export default function MultipleChoiceEditor({
           Question
           <EditorProvider>
             <Editor value={formState.question}
-              onChange={(e) => handleFieldChange('question', e.target.value.toString().replace(/<br\s*\/?>/gi, ''))} >
+              onChange={(e) => handleFieldChange('question', e.target.value)} >
               <Toolbar>
                 <BtnUndo />
                 <BtnRedo />
