@@ -3,6 +3,7 @@ import { CiEdit } from "react-icons/ci";
 import { useParams } from "react-router";
 import "./styles.css";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 export default function QuizDetails({
   quizDetails,
   fetchQuizDetails,
@@ -11,6 +12,7 @@ export default function QuizDetails({
   fetchQuizDetails: (qzid: string) => void;
 }) {
   const { cid, qzid } = useParams();
+  const { isStaff } = useSelector((state: any) => state.accountReducer);
 
   useEffect(() => {
     fetchQuizDetails(qzid as string);
@@ -19,15 +21,26 @@ export default function QuizDetails({
   return (
     <div id="wd-quiz-details">
       <div className="w-100 justify-content-center align-self-center row mb-3 ps-5">
-        <div className="col-md-4">
-          <button className="btn btn-secondary me-3">Preview</button>
-          <Link to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${qzid}`}>
-            <button className="btn btn-secondary">
-              <CiEdit className="me-1" />
-              Edit
-            </button>
-          </Link>
-        </div>
+        {(isStaff && (
+          <div className="col-md-4">
+            <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/`}>
+              <button className="btn btn-secondary me-3">Preview</button>
+            </Link>
+
+            <Link to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${qzid}`}>
+              <button className="btn btn-secondary">
+                <CiEdit className="me-1" />
+                Edit
+              </button>
+            </Link>
+          </div>
+        )) || (
+          <div className="col-md-4">
+            <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/`}>
+              <button className="btn btn-danger me-3">Take Quiz</button>
+            </Link>
+          </div>
+        )}
       </div>
       <hr />
       <div id="wd-quiz-details-section">

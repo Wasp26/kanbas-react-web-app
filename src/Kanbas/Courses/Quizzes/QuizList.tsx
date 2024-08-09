@@ -12,7 +12,6 @@ import QuizControls from "./QuizControls";
 import { CiSearch } from "react-icons/ci";
 
 export default function QuizList({
-
   isStaff,
   quizzes,
   quizDetails,
@@ -20,6 +19,7 @@ export default function QuizList({
   updateQuizDetails,
   deleteQuizDetails,
   filterQuizzesByName,
+  resetQuizDetails,
 }: {
   isStaff: Boolean;
   quizzes: any;
@@ -28,12 +28,14 @@ export default function QuizList({
   updateQuizDetails: (quiz: any) => void;
   deleteQuizDetails: (quizId: string) => void;
   filterQuizzesByName: (name: string) => void;
+  resetQuizDetails: () => void;
 }) {
   const { cid } = useParams();
   const dateToday = new Date();
 
   useEffect(() => {
     fetchAllQuizzes();
+    resetQuizDetails();
   }, []);
   const questions = quizDetails.questions || [];
   const totalQuestions = questions.length;
@@ -77,51 +79,56 @@ export default function QuizList({
           </div>
         </li>
         {quizzes &&
-          quizzes.map((quiz: any) => (
-            <li className="wd-asmnt list-item p-3">
-              <div className="row">
-                <div className="col-1 justify-content-center align-self-center text-center h4">
-                  <IoRocketOutline className="text-success" />
-                </div>
-                <div className="col-8">
-                  <div>
-                    <Link
-                      to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/Details`}
-                      className="text-decoration-none text-danger"
-                    >
-                      <b>{quiz.title}</b>
-                    </Link>
+          quizzes.map(
+            (quiz: any) =>
+              (isStaff || quiz.published) && (
+                <li className="wd-asmnt list-item p-3">
+                  <div className="row">
+                    <div className="col-1 justify-content-center align-self-center text-center h4">
+                      <IoRocketOutline className="text-success" />
+                    </div>
+                    <div className="col-8">
+                      <div>
+                        <Link
+                          to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}/Details`}
+                          className="text-decoration-none text-danger"
+                        >
+                          <b>{quiz.title}</b>
+                        </Link>
+                      </div>
+                      <div>
+                        <span>
+                          <b>
+                            {(dateToday <
+                              new Date(quiz.availableFrom.split("T")[0]) &&
+                              `Not Available Until ${
+                                quiz.availableFrom.split("T")[0]
+                              } `) ||
+                              (dateToday >
+                                new Date(quiz.availableUntil.split("T")[0]) &&
+                                "Closed ") ||
+                              "Available "}
+                          </b>
+                        </span>{" "}
+                        | <span>Due {quiz.dueDate.split("T")[0]}</span> |{" "}
+                        {quiz.points}
+                        {" Pt(s)"} | {quiz.numQuestions}
+                        {" Question(s)"}
+                      </div>
+                    </div>
+                    {isStaff && (
+                      <div className="col-3 justify-content-center align-self-center">
+                        <QuizControls
+                          quiz={quiz}
+                          updateQuizDetails={updateQuizDetails}
+                          deleteQuizDetails={deleteQuizDetails}
+                        />
+                      </div>
+                    )}
                   </div>
-                  <div>
-                    <span>
-                      <b>
-                        {(dateToday <
-                          new Date(quiz.availableFrom.split("T")[0]) &&
-                          `Not Available Until ${
-                            quiz.availableFrom.split("T")[0]
-                          } `) ||
-                          (dateToday >
-                            new Date(quiz.availableUntil.split("T")[0]) &&
-                            "Closed ") ||
-                          "Available "}
-                      </b>
-                    </span>{" "}
-                    | <span>Due {quiz.dueDate.split("T")[0]}</span> |{" "}
-                    {quiz.points}
-                    {" pts"} | {totalQuestions}
-                    {" questions"}
-                  </div>
-                </div>
-                <div className="col-3 justify-content-center align-self-center">
-                  <QuizControls
-                    quiz={quiz}
-                    updateQuizDetails={updateQuizDetails}
-                    deleteQuizDetails={deleteQuizDetails}
-                  />
-                </div>
-              </div>
-            </li>
-          ))}
+                </li>
+              )
+          )}
       </ul>
     </div>
   );

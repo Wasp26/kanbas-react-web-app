@@ -1,15 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
-import { BtnBold, BtnBulletList, BtnClearFormatting, BtnItalic, BtnLink, BtnNumberedList, BtnRedo, BtnStrikeThrough, BtnStyles, BtnUnderline, BtnUndo, Editor, EditorProvider, HtmlButton, Separator, Toolbar } from 'react-simple-wysiwyg';
-import { fetchQuizDetails } from '../client';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import {
+  BtnBold,
+  BtnBulletList,
+  BtnClearFormatting,
+  BtnItalic,
+  BtnLink,
+  BtnNumberedList,
+  BtnRedo,
+  BtnStrikeThrough,
+  BtnStyles,
+  BtnUnderline,
+  BtnUndo,
+  Editor,
+  EditorProvider,
+  HtmlButton,
+  Separator,
+  Toolbar,
+} from "react-simple-wysiwyg";
+import { fetchQuizDetails } from "../client";
 
 const initialState = {
-  title: '',
+  title: "",
   points: 0,
-  question: '',
-  choices: [{ id: 1, text: '', isCorrect: false }],
+  question: "",
+  choices: [{ id: 1, text: "", isCorrect: false }],
   nextId: 2,
-  type: 'multiple-choice'
+  type: "multiple-choice",
 };
 
 export default function MultipleChoiceEditor({
@@ -19,7 +36,7 @@ export default function MultipleChoiceEditor({
   quizDetails: any;
   setQuizDetails: (quiz: any) => void;
 }) {
-  const { cid, id } = useParams(); 
+  const { cid, qzid, id } = useParams();
   const [formState, setFormState] = useState(initialState);
   const navigate = useNavigate();
   const questions = quizDetails.questions || [];
@@ -29,9 +46,9 @@ export default function MultipleChoiceEditor({
       if (id) {
         let existingQuestion = questions.find((q: any) => q.id === id);
         if (!existingQuestion) {
-          const quiz = await fetchQuizDetails(cid as string, quizDetails._id);
+          const quiz = await fetchQuizDetails(cid as string, qzid as string);
           existingQuestion = quiz.questions.find((q: any) => q.id === id);
-        }else{
+        } else {
           setFormState({
             ...existingQuestion,
             nextId: existingQuestion.choices?.length + 1 || 1,
@@ -40,50 +57,51 @@ export default function MultipleChoiceEditor({
       }
     };
     fetchQuestion();
-  }, [id, questions, cid, quizDetails._id]);
-
+  }, [id, questions, cid, qzid]);
 
   const addChoice = () => {
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
-      choices: [...prevState.choices, { id: prevState.nextId, text: '', isCorrect: false }],
-      nextId: prevState.nextId + 1
+      choices: [
+        ...prevState.choices,
+        { id: prevState.nextId, text: "", isCorrect: false },
+      ],
+      nextId: prevState.nextId + 1,
     }));
   };
 
   const removeChoice = (choiceId: number) => {
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
-      choices: prevState.choices.filter(choice => choice.id !== choiceId)
+      choices: prevState.choices.filter((choice) => choice.id !== choiceId),
     }));
   };
 
   const handleChoiceTextChange = (choiceId: number, text: string) => {
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
-      choices: prevState.choices.map(choice => 
+      choices: prevState.choices.map((choice) =>
         choice.id === choiceId ? { ...choice, text } : choice
-      )
+      ),
     }));
   };
 
   const handleCorrectChoiceChange = (choiceId: number) => {
-    setFormState(prevState => ({
+    setFormState((prevState) => ({
       ...prevState,
-      choices: prevState.choices.map(choice => 
-        ({ ...choice, isCorrect: choice.id === choiceId })
-      )
+      choices: prevState.choices.map((choice) => ({
+        ...choice,
+        isCorrect: choice.id === choiceId,
+      })),
     }));
   };
 
   const handleFieldChange = (field: string, value: any) => {
     setFormState((prevState) => ({
       ...prevState,
-      [field]: value
+      [field]: value,
     }));
   };
-
-  
 
   const handleSave = () => {
     const questionData = {
@@ -92,29 +110,36 @@ export default function MultipleChoiceEditor({
       points: formState.points,
       question: formState.question,
       choices: formState.choices,
-      type: formState.type
+      type: formState.type,
     };
 
     const updatedQuestions = id
       ? questions.map((q: any) => (q.id === id ? questionData : q))
       : [...questions, questionData];
 
-    setQuizDetails({ ...quizDetails, questions: updatedQuestions });
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/${quizDetails._id}/Questions`);
+    setQuizDetails({
+      ...quizDetails,
+      questions: updatedQuestions,
+      numQuestions: updatedQuestions.length,
+      points: updatedQuestions.reduce(
+        (acc: number, q: any) => acc + q.points,
+        0
+      ),
+    });
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/${qzid}/Questions`);
   };
 
   return (
-
-  <div>
+    <div>
       <h2>Multiple Choice Question Editor</h2>
       <div>
         <label>
           Title
-          <input 
-            type="text" 
-            className='form-control'
-            value={formState.title} 
-            onChange={(e) => handleFieldChange('title', e.target.value)} 
+          <input
+            type="text"
+            className="form-control"
+            value={formState.title}
+            onChange={(e) => handleFieldChange("title", e.target.value)}
             placeholder="Enter question title..."
           />
         </label>
@@ -123,11 +148,13 @@ export default function MultipleChoiceEditor({
         <br />
         <label>
           Points
-          <input 
-            type="number" 
-            className='form-control'
-            value={formState.points} 
-            onChange={(e) => handleFieldChange('points', Number(e.target.value))} 
+          <input
+            type="number"
+            className="form-control"
+            value={formState.points}
+            onChange={(e) =>
+              handleFieldChange("points", Number(e.target.value))
+            }
             placeholder="Enter points..."
           />
         </label>
@@ -136,53 +163,56 @@ export default function MultipleChoiceEditor({
       <div>
         <label>
           Question
-        <EditorProvider>
-        <Editor value={formState.question} 
-            onChange={(e) => handleFieldChange('question', e.target.value)} >
-           <Toolbar>
-          <BtnUndo />
-          <BtnRedo />
-          <Separator />
-          <BtnBold />
-          <BtnItalic />
-          <BtnUnderline />
-          <BtnStrikeThrough />
-          <Separator />
-          <BtnNumberedList />
-          <BtnBulletList />
-          <Separator />
-          <BtnLink />
-          <BtnClearFormatting />
-          <HtmlButton />
-          <Separator />
-          <BtnStyles />
-        </Toolbar>
-
-              </Editor>
-        </EditorProvider>
+          <EditorProvider>
+            <Editor
+              value={formState.question}
+              onChange={(e) => handleFieldChange("question", e.target.value)}
+            >
+              <Toolbar>
+                <BtnUndo />
+                <BtnRedo />
+                <Separator />
+                <BtnBold />
+                <BtnItalic />
+                <BtnUnderline />
+                <BtnStrikeThrough />
+                <Separator />
+                <BtnNumberedList />
+                <BtnBulletList />
+                <Separator />
+                <BtnLink />
+                <BtnClearFormatting />
+                <HtmlButton />
+                <Separator />
+                <BtnStyles />
+              </Toolbar>
+            </Editor>
+          </EditorProvider>
         </label>
       </div>
       <br />
       <div>
-        <label className='mb-1'>Choices</label>
-        {formState.choices.map(choice => (
-          <div key={choice.id} className='d-flex mb-3'>
+        <label className="mb-1">Choices</label>
+        {formState.choices.map((choice) => (
+          <div key={choice.id} className="d-flex mb-3">
             <input
               type="radio"
-              className='me-3'
-              name = "wd-mcq-choice-radio"
+              className="me-3"
+              name="wd-mcq-choice-radio"
               checked={choice.isCorrect}
               onChange={() => handleCorrectChoiceChange(choice.id)}
             />
-            <textarea 
-              value={choice.text} 
+            <textarea
+              value={choice.text}
               name="wd-mcq-choice-input"
-              className='form-control w-25 me-3'
-              onChange={(e) => handleChoiceTextChange(choice.id, e.target.value)} 
+              className="form-control w-25 me-3"
+              onChange={(e) =>
+                handleChoiceTextChange(choice.id, e.target.value)
+              }
               placeholder="Enter choice text here..."
             />
-            <button 
-              className='btn btn-secondary h-100'
+            <button
+              className="btn btn-secondary h-100"
               onClick={() => removeChoice(choice.id)}
             >
               Remove
@@ -190,30 +220,22 @@ export default function MultipleChoiceEditor({
           </div>
         ))}
         <br />
-        <button 
-          className='btn btn-secondary'
-          onClick={addChoice}
-        >
+        <button className="btn btn-secondary" onClick={addChoice}>
           Add Choice
         </button>
       </div>
       <hr />
       <div>
-        <button 
-          className='btn btn-danger me-3' 
-          onClick={handleSave}
-        >
+        <button className="btn btn-danger me-3" onClick={handleSave}>
           Save/Update Question
         </button>
-        <Link 
-          className='btn btn-secondary'  
-          to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${quizDetails._id}/Questions`}
+        <Link
+          className="btn btn-secondary"
+          to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${qzid}/Questions`}
         >
           Cancel
         </Link>
       </div>
     </div>
-
-  
   );
 }

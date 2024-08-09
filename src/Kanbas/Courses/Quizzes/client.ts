@@ -3,7 +3,6 @@ const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 const QUIZ_API = `${REMOTE_SERVER}/api/quizzes`;
 const QUESTION_API = `${REMOTE_SERVER}/api/questions`;
 
-
 export const fetchQuizDetails = async (courseId: string, quizId: string) => {
   const { data } = await axios.get(`${QUIZ_API}/${courseId}/${quizId}`);
   return data;
@@ -15,7 +14,6 @@ export const createQuizDetails = async (courseId: string, quiz: any) => {
 };
 
 export const updateQuizDetails = async (courseId: string, quiz: any) => {
-  console.log(quiz._id);
   const { data } = await axios.put(`${QUIZ_API}/${courseId}/${quiz._id}`, quiz);
   return data;
 };

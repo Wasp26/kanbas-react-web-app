@@ -6,6 +6,7 @@ import QuizDetails from "./QuizDetails";
 import QuizEditor from "./QuizEditor";
 import QuizList from "./QuizList";
 import { useState } from "react";
+import QuizPreview from "./QuizPreview";
 
 export default function Quizzes() {
   const { cid } = useParams();
@@ -41,7 +42,7 @@ export default function Quizzes() {
     }
   };
 
-  const [quizDetails, setQuizDetails] = useState<any>({
+  const defaultQuiz = {
     courseId: cid,
     numQuestions: 0,
     published: false,
@@ -63,21 +64,33 @@ export default function Quizzes() {
     availableFrom: "2024-06-01",
     availableUntil: "2024-07-08",
     questions: [],
-  });
+  };
+
+  const [quizDetails, setQuizDetails] = useState<any>(defaultQuiz);
+
+  const resetQuizDetails = () => {
+    setQuizDetails(defaultQuiz);
+  };
 
   const fetchQuizDetails = async (qzid: string) => {
     const quiz = await client.fetchQuizDetails(cid as string, qzid);
     setQuizDetails(quiz);
   };
 
-  const createQuizDetails = async () => {
-    const quiz = await client.createQuizDetails(cid as string, quizDetails);
+  const createQuizDetails = async (setPublished: Boolean) => {
+    const quiz = await client.createQuizDetails(cid as string, {
+      ...quizDetails,
+      published: setPublished,
+    });
     setQuizDetails(quiz);
     return quiz._id;
   };
 
-  const saveQuizDetails = async () => {
-    await client.updateQuizDetails(cid as string, quizDetails);
+  const saveQuizDetails = async (setPublished: Boolean) => {
+    await client.updateQuizDetails(cid as string, {
+      ...quizDetails,
+      published: setPublished,
+    });
   };
 
   return (
@@ -93,7 +106,8 @@ export default function Quizzes() {
               updateQuizDetails={updateQuizDetails}
               deleteQuizDetails={deleteQuizDetails}
               filterQuizzesByName={filterQuizzesByName}
-              quizDetails= {quizDetails}
+              quizDetails={quizDetails}
+              resetQuizDetails={resetQuizDetails}
             />
           }
         />
@@ -113,6 +127,15 @@ export default function Quizzes() {
           path=":qzid/Details"
           element={
             <QuizDetails
+              quizDetails={quizDetails}
+              fetchQuizDetails={fetchQuizDetails}
+            />
+          }
+        />
+        <Route
+          path=":qzid/Attempt/*"
+          element={
+            <QuizPreview
               quizDetails={quizDetails}
               fetchQuizDetails={fetchQuizDetails}
             />

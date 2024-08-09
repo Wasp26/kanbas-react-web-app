@@ -17,7 +17,6 @@ export default function Kanbas() {
 
   const fetchAssociatedCourses = async () => {
     const courses = await client.fetchAssociatedCourses();
-    console.log(courses);
     setCourses(courses);
   };
 
