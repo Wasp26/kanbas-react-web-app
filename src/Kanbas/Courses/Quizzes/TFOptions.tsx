@@ -1,18 +1,22 @@
+import { current } from "@reduxjs/toolkit";
+
 export default function TFOptions({
   question,
   attemptDetails,
   setAttemptDetails,
+  currentAnswer,
 }: {
   question: any;
   attemptDetails: any;
   setAttemptDetails: (attempt: any) => void;
+  currentAnswer: any;
 }) {
+  const prevAnswerValue = currentAnswer ? currentAnswer.answer : "";
+
   const handleClick = (event: any) => {
-    const currentAnswer = event.currentTarget.value;
+    const cAnswer = event.currentTarget.value;
     const allAnswers = attemptDetails.answers;
-    const prevAttempt = allAnswers.find(
-      (answer: any) => answer.qid === question.id
-    );
+    const prevAttempt = currentAnswer;
 
     let updatedAnswers = [];
     if (prevAttempt) {
@@ -20,7 +24,7 @@ export default function TFOptions({
         if (answer.qid === question.id) {
           return {
             ...answer,
-            answer: currentAnswer,
+            answer: cAnswer,
           };
         }
         return answer;
@@ -30,7 +34,7 @@ export default function TFOptions({
         ...allAnswers,
         {
           qid: question.id,
-          answer: currentAnswer,
+          answer: cAnswer,
         },
       ];
     }
@@ -52,6 +56,7 @@ export default function TFOptions({
           className="form-check-input mb-1"
           value="true"
           onClick={handleClick}
+          checked={prevAnswerValue === "true"}
         />
         <label htmlFor="trueOption" className="form-check-label">
           True
@@ -66,6 +71,7 @@ export default function TFOptions({
           className="form-check-input mb-1"
           value="false"
           onClick={handleClick}
+          checked={prevAnswerValue === "false"}
         />
         <label htmlFor="falseOption" className="form-check-label">
           False

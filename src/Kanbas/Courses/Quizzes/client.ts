@@ -1,6 +1,7 @@
 import axios from "axios";
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 const QUIZ_API = `${REMOTE_SERVER}/api/quizzes`;
+const QUIZ_ATTEMPTS_API = `${REMOTE_SERVER}/api/quizattempts`;
 const QUESTION_API = `${REMOTE_SERVER}/api/questions`;
 
 export const fetchQuizDetails = async (courseId: string, quizId: string) => {
@@ -36,5 +37,21 @@ export const findQuizzesByPartialName = async (
 };
 export const findQuestionById = async (id: string) => {
   const { data } = await axios.get(`${QUESTION_API}/${id}`);
+  return data;
+};
+
+export const recordAttempt = async (attempt: any) => {
+  const { data } = await axios.post(`${QUIZ_ATTEMPTS_API}`, attempt);
+  return data;
+};
+
+export const fetchAttempt = async (
+  userId: string,
+  courseId: string,
+  quizId: string
+) => {
+  const { data } = await axios.get(
+    `${QUIZ_ATTEMPTS_API}/${userId}/${courseId}/${quizId}`
+  );
   return data;
 };

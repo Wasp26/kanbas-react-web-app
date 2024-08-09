@@ -34,6 +34,10 @@ export default function QuizQuestion({
 
   const question = getQuestionById();
 
+  const currentAnswer = attemptDetails.answers.filter(
+    (answer: any) => answer.qid === qid
+  )[0];
+
   return (
     <div>
       <h1 className="mb-4">{quizDetails.title}</h1>
@@ -60,6 +64,7 @@ export default function QuizQuestion({
             question={question}
             attemptDetails={attemptDetails}
             setAttemptDetails={setAttemptDetails}
+            currentAnswer={currentAnswer}
           />
         )) ||
           (question.type === "multiple-choice" && (
@@ -67,6 +72,7 @@ export default function QuizQuestion({
               question={question}
               attemptDetails={attemptDetails}
               setAttemptDetails={setAttemptDetails}
+              currentAnswer={currentAnswer}
             />
           ))}
       </div>
