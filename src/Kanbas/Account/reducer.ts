@@ -8,7 +8,6 @@ const accountSlice = createSlice({
   initialState,
   reducers: {
     setCurrentUser: (state, action) => {
-      console.log(action.payload);
       state.currentUser = action.payload;
       state.isStaff = state.currentUser
         ? action.payload.role === "TA" || action.payload.role === "FACULTY"

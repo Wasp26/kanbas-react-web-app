@@ -9,13 +9,11 @@ export const fetchAssociatedCourses = async () => {
 };
 
 export const fetchUnAssociatedCourses = async () => {
-  console.log("EJINFE");
   const { data } = await axiosWithCredentials.get(`${COURSES_API}/unenrolled`);
   return data;
 };
 
 export const studentEnroll = async (courseId: string) => {
-  console.log("Enrolling!");
   const { data } = await axiosWithCredentials.post(
     `${COURSES_API}/enroll/${courseId}`
   );

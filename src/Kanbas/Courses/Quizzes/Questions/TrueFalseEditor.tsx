@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import Editor from 'react-simple-wysiwyg';
-import { fetchQuizDetails } from '../client';
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Editor from "react-simple-wysiwyg";
+import { fetchQuizDetails } from "../client";
 
 const initialState = {
-  title: '',
+  title: "",
   points: 0,
-  question: '',
+  question: "",
   answer: false,
 };
 
@@ -17,7 +17,7 @@ export default function TrueFalseEditor({
   quizDetails: any;
   setQuizDetails: (quiz: any) => void;
 }) {
-  const { cid, id } = useParams();
+  const { cid, qzid, id } = useParams();
   const [formState, setFormState] = useState(initialState);
   const navigate = useNavigate();
   const questions = quizDetails.questions || [];
@@ -27,9 +27,9 @@ export default function TrueFalseEditor({
       if (id) {
         let existingQuestion = questions.find((q: any) => q.id === id);
         if (!existingQuestion) {
-          const quiz = await fetchQuizDetails(cid as string, quizDetails._id);
+          const quiz = await fetchQuizDetails(cid as string, qzid as string);
           existingQuestion = quiz.questions.find((q: any) => q.id === id);
-        }else{
+        } else {
           setFormState({
             ...existingQuestion,
             nextId: existingQuestion.choices?.length + 1 || 1,
@@ -38,9 +38,7 @@ export default function TrueFalseEditor({
       }
     };
     fetchQuestion();
-  }, [id, questions, cid, quizDetails._id]);
-
-  
+  }, [id, questions, cid, qzid]);
 
   const handleFieldChange = (field: any, value: any) => {
     setFormState((prevState) => ({
@@ -60,19 +58,27 @@ export default function TrueFalseEditor({
     const newQuestionId = new Date().getTime().toString();
     const questionData = {
       id: id || newQuestionId,
-      type: 'true-false',
+      type: "true-false",
       title: formState.title,
       points: formState.points,
       question: formState.question,
       answer: formState.answer,
     };
     const updatedQuestions = id
-    ? questions.map((q: any) => (q.id === id ? questionData : q))
-    : [...questions, questionData];
+      ? questions.map((q: any) => (q.id === id ? questionData : q))
+      : [...questions, questionData];
 
-  setQuizDetails({ ...quizDetails, questions: updatedQuestions });
-  navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/${quizDetails._id}/Questions`);
-  }
+    setQuizDetails({
+      ...quizDetails,
+      questions: updatedQuestions,
+      numQuestions: updatedQuestions.length,
+      points: updatedQuestions.reduce(
+        (acc: number, q: any) => acc + q.points,
+        0
+      ),
+    });
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/Editor/${qzid}/Questions`);
+  };
 
   return (
     <div>
@@ -84,7 +90,7 @@ export default function TrueFalseEditor({
             type="text"
             className="form-control"
             value={formState.title}
-            onChange={(e) => handleFieldChange('title', e.target.value)}
+            onChange={(e) => handleFieldChange("title", e.target.value)}
             placeholder="Enter question title..."
           />
         </label>
@@ -97,7 +103,9 @@ export default function TrueFalseEditor({
             type="number"
             className="form-control"
             value={formState.points}
-            onChange={(e) => handleFieldChange('points', Number(e.target.value))}
+            onChange={(e) =>
+              handleFieldChange("points", Number(e.target.value))
+            }
             placeholder="Enter points..."
           />
         </label>
@@ -149,7 +157,10 @@ export default function TrueFalseEditor({
         <button className="btn btn-danger me-3" onClick={handleSave}>
           Save/Update Question
         </button>
-        <Link className="btn btn-secondary" to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${quizDetails._id}/Questions`}>
+        <Link
+          className="btn btn-secondary"
+          to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${qzid}/Questions`}
+        >
           Cancel
         </Link>
       </div>
