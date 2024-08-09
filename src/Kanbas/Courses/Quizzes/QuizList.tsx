@@ -12,8 +12,10 @@ import QuizControls from "./QuizControls";
 import { CiSearch } from "react-icons/ci";
 
 export default function QuizList({
+
   isStaff,
   quizzes,
+  quizDetails,
   fetchAllQuizzes,
   updateQuizDetails,
   deleteQuizDetails,
@@ -21,6 +23,7 @@ export default function QuizList({
 }: {
   isStaff: Boolean;
   quizzes: any;
+  quizDetails: any;
   fetchAllQuizzes: () => void;
   updateQuizDetails: (quiz: any) => void;
   deleteQuizDetails: (quizId: string) => void;
@@ -32,7 +35,8 @@ export default function QuizList({
   useEffect(() => {
     fetchAllQuizzes();
   }, []);
-
+  const questions = quizDetails.questions || [];
+  const totalQuestions = questions.length;
   return (
     <div id="wd-quizzes">
       {isStaff && (
@@ -104,7 +108,7 @@ export default function QuizList({
                     </span>{" "}
                     | <span>Due {quiz.dueDate.split("T")[0]}</span> |{" "}
                     {quiz.points}
-                    {" pts"} | {quiz.numQuestions}
+                    {" pts"} | {totalQuestions}
                     {" questions"}
                   </div>
                 </div>

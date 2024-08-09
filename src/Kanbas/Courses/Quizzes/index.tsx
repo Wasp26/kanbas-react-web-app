@@ -93,6 +93,7 @@ export default function Quizzes() {
               updateQuizDetails={updateQuizDetails}
               deleteQuizDetails={deleteQuizDetails}
               filterQuizzesByName={filterQuizzesByName}
+              quizDetails= {quizDetails}
             />
           }
         />
