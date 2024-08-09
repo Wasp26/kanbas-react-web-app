@@ -113,36 +113,9 @@ export default function QuizPreview({
         <div>
           <div className="row mb-5">
             <div className="col-7"></div>
-            <div className="col-4">
-              {currentQuestionIndex > 0 && (
-                <Link
-                  to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Question/${
-                    questions[currentQuestionIndex - 1].id
-                  }`}
-                  className="btn btn-secondary me-1"
-                >
-                  Previous
-                </Link>
-              )}
-
-              {currentQuestionIndex < questions.length && (
-                <Link
-                  to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Question/${
-                    questions[currentQuestionIndex + 1].id
-                  }`}
-                  className="btn btn-secondary me-1"
-                >
-                  Previous
-                </Link>
-              )}
-
-              <button
-                className="btn btn-danger float-end"
-                onClick={submitQuizHandler}
-              >
-                Submit Quiz
-              </button>
-            </div>
+            <div className="mt-3 border border-dark rounded-2 d-flex flex-row-reverse">
+        <button className="btn btn-danger m-2" onClick={submitQuizHandler}>SUBMIT</button>
+      </div>
           </div>
           <h6>Questions</h6>
           <ul className="list-group">
@@ -154,7 +127,7 @@ export default function QuizPreview({
                     to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Question/${question.id}`}
                     className="text-decoration-none text-danger"
                   >
-                    {question.title}
+                   Question {index + 1}
                   </Link>
                 </li>
               );

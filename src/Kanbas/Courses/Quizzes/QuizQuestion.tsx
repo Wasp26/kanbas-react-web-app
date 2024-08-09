@@ -92,9 +92,6 @@ export default function QuizQuestion({
       </div>
       <button className="btn btn-secondary" onClick={handlePrevQuestion}>PREV</button>
       <button className="btn btn-secondary float-end" onClick={handleNextQuestion}>NEXT</button>
-      <div className="mt-3 border border-dark rounded-2 d-flex flex-row-reverse">
-        <button className="btn btn-danger m-2">SUBMIT</button>
-      </div>
     </div>
   );
 }
