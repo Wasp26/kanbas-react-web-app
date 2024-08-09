@@ -99,19 +99,25 @@ export default function QuizList({
                       <div>
                         <span>
                           <b>
-                            {(dateToday <
-                              new Date(quiz.availableFrom.split("T")[0]) &&
+                            {(quiz.availableFrom &&
+                              quiz.availableUntil &&
+                              dateToday <
+                                new Date(quiz.availableFrom.split("T")[0]) &&
                               `Not Available Until ${
                                 quiz.availableFrom.split("T")[0]
                               } `) ||
-                              (dateToday >
-                                new Date(quiz.availableUntil.split("T")[0]) &&
+                              (quiz.availableUntil &&
+                                dateToday >
+                                  new Date(quiz.availableUntil.split("T")[0]) &&
                                 "Closed ") ||
                               "Available "}
                           </b>
                         </span>{" "}
-                        | <span>Due {quiz.dueDate.split("T")[0]}</span> |{" "}
-                        {quiz.points}
+                        |{" "}
+                        <span>
+                          Due {quiz.dueDate && quiz.dueDate.split("T")[0]}
+                        </span>{" "}
+                        | {quiz.points}
                         {" Pt(s)"} | {quiz.numQuestions}
                         {" Question(s)"}
                       </div>

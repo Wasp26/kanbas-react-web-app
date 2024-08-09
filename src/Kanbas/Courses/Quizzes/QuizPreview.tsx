@@ -1,10 +1,18 @@
 import { useSelector } from "react-redux";
-import { Navigate, Route, Routes, useParams } from "react-router";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router";
 import { RxQuestionMarkCircled } from "react-icons/rx";
 import { Link } from "react-router-dom";
 import QuizQuestion from "./QuizQuestion";
-import { current } from "@reduxjs/toolkit";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import * as client from "./client";
+import ScoreDisplay from "./ScoreDisplay";
 
 export default function QuizPreview({
   quizDetails,
@@ -13,6 +21,8 @@ export default function QuizPreview({
   quizDetails: any;
   fetchQuizDetails: (qzid: string) => void;
 }) {
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { cid, qzid } = useParams();
   const { currentUser, isStaff } = useSelector(
     (state: any) => state.accountReducer
@@ -24,9 +34,57 @@ export default function QuizPreview({
     quizId: qzid,
     courseId: cid,
     userId: currentUser._id,
-    attemptNo: 1,
+    attemptNo: 0,
     answers: [],
   });
+
+  const submitQuizHandler = () => {
+    const givenAnswers = attemptDetails.answers;
+    let score = 0;
+    givenAnswers.map((answer: any) => {
+      const question = questions.find(
+        (question: any) => question.id === answer.qid
+      );
+      if (question.type === "true-false") {
+        if (`${question.answer}` === answer.answer) {
+          score += question.points;
+        }
+      } else if (question.type === "multiple-choice") {
+        question.choices.map((choice: any) => {
+          if (choice.isCorrect && choice.id === parseInt(answer.answer)) {
+            score += question.points;
+          }
+        });
+      }
+    });
+
+    console.log(score);
+    submitAttempt();
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Results`);
+  };
+
+  const fetchAttemptDetails = async () => {
+    const attempt = await client.fetchAttempt(
+      currentUser._id,
+      cid as string,
+      qzid as string
+    );
+    if (attempt) {
+      console.log(attempt);
+      setAttemptDetails(attempt);
+    }
+  };
+
+  const submitAttempt = async () => {
+    const attempt = await client.recordAttempt({
+      ...attemptDetails,
+      attemptNo: attemptDetails.attemptNo + 1,
+    });
+  };
+
+  useEffect(() => {
+    fetchAttemptDetails();
+  }, []);
 
   return (
     <div id="wd-quiz-questions" className="clearfix">
@@ -43,31 +101,67 @@ export default function QuizPreview({
               questions={questions}
               attemptDetails={attemptDetails}
               setAttemptDetails={setAttemptDetails}
+              currentQuestionIndex={currentQuestionIndex}
+              setCurrentIndex={setCurrentIndex}
             />
           }
         />
+        <Route path="Results" element={<ScoreDisplay />} />
       </Routes>
 
-    
-        <div className="mt-4">
-        <h6>Questions</h6>
-      <ul className="list-group">
-        {questions.map((question: any, index: number) => {
-          return (
-            <li className="list-group-item border-none w-25">
-              <RxQuestionMarkCircled className="me-1" />
-              
-              <Link
-                to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Question/${question.id}`}
-                className="text-decoration-none text-danger"
+      {!pathname.includes("Results") && (
+        <div>
+          <div className="row mb-5">
+            <div className="col-7"></div>
+            <div className="col-4">
+              {currentQuestionIndex > 0 && (
+                <Link
+                  to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Question/${
+                    questions[currentQuestionIndex - 1].id
+                  }`}
+                  className="btn btn-secondary me-1"
+                >
+                  Previous
+                </Link>
+              )}
+
+              {currentQuestionIndex < questions.length && (
+                <Link
+                  to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Question/${
+                    questions[currentQuestionIndex + 1].id
+                  }`}
+                  className="btn btn-secondary me-1"
+                >
+                  Previous
+                </Link>
+              )}
+
+              <button
+                className="btn btn-danger float-end"
+                onClick={submitQuizHandler}
               >
-                Question {index +1}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+                Submit Quiz
+              </button>
+            </div>
+          </div>
+          <h6>Questions</h6>
+          <ul className="list-group">
+            {questions.map((question: any, index: number) => {
+              return (
+                <li className="list-group-item border-none w-25">
+                  <RxQuestionMarkCircled className="me-1" />
+                  <Link
+                    to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Question/${question.id}`}
+                    className="text-decoration-none text-danger"
+                  >
+                    {question.title}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
+      )}
     </div>
   );
 }

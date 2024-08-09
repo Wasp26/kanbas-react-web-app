@@ -9,11 +9,15 @@ export default function QuizQuestion({
   questions,
   attemptDetails,
   setAttemptDetails,
+  currentQuestionIndex,
+  setCurrentIndex,
 }: {
   quizDetails: any;
   questions: any[];
   attemptDetails: any;
   setAttemptDetails: (attempt: any) => void;
+  currentQuestionIndex: number;
+  setCurrentIndex: (index: number) => void;
 }) {
 
 
@@ -38,6 +42,9 @@ export default function QuizQuestion({
     }
   };
 
+  const currentAnswer = attemptDetails.answers.filter(
+    (answer: any) => answer.qid === qid
+  )[0];
   const handlePrevQuestion = () => {
     if (currentIndex > 0) {
       const prevQuestionId = questions[currentIndex - 1].id;
@@ -62,6 +69,7 @@ export default function QuizQuestion({
             question={question}
             attemptDetails={attemptDetails}
             setAttemptDetails={setAttemptDetails}
+            currentAnswer={currentAnswer}
           />
         
         )) ||
@@ -70,6 +78,7 @@ export default function QuizQuestion({
               question={question}
               attemptDetails={attemptDetails}
               setAttemptDetails={setAttemptDetails}
+              currentAnswer={currentAnswer}
             />
             
           )) ||

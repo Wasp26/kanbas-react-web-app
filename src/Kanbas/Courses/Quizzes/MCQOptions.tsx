@@ -2,38 +2,35 @@ export default function MCQOptions({
   question,
   attemptDetails,
   setAttemptDetails,
+  currentAnswer,
 }: {
   question: any;
   attemptDetails: any;
   setAttemptDetails: (attempt: any) => void;
+  currentAnswer: any;
 }) {
+  const prevAnswerValue = currentAnswer ? currentAnswer.answer : "";
   const choices = question.choices;
   const handleClick = (event: any) => {
-    const currentAnswer = event.currentTarget.value;
+    const currentAnswer = event.target.id;
+    const newAnswer = {
+      qid: question.id,
+      answer: currentAnswer,
+    };
     const allAnswers = attemptDetails.answers;
     const prevAttempt = allAnswers.find(
       (answer: any) => answer.qid === question.id
     );
-
     let updatedAnswers = [];
     if (prevAttempt) {
       updatedAnswers = allAnswers.map((answer: any) => {
         if (answer.qid === question.id) {
-          return {
-            ...answer,
-            answer: currentAnswer,
-          };
+          return newAnswer;
         }
         return answer;
       });
     } else {
-      updatedAnswers = [
-        ...allAnswers,
-        {
-          qid: question.id,
-          answer: currentAnswer,
-        },
-      ];
+      updatedAnswers = [...allAnswers, newAnswer];
     }
 
     console.log(updatedAnswers);
@@ -52,7 +49,8 @@ export default function MCQOptions({
             id={choice.id}
             name="answer"
             className="form-check-input mb-1"
-            value={choice.isCorrect ? "true" : "false"}
+            onClick={handleClick}
+            checked={parseInt(prevAnswerValue) === choice.id}
           />
           <label htmlFor={choice.id} className="form-check-label">
             {choice.text}
