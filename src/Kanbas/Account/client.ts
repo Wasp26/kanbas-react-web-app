@@ -12,6 +12,14 @@ export const signin = async (credentials: any) => {
   return response.data;
 };
 
+export const updateUser = async (userId: string, userDetails: any) => {
+  const response = await axiosWithCredentials.put(
+    `${USERS_API}/${userId}`,
+    userDetails
+  );
+  return response.data;
+};
+
 export const profile = async () => {
   const response = await axiosWithCredentials.post(`${USERS_API}/profile`);
   return response.data;

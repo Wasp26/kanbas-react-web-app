@@ -1,12 +1,15 @@
+
 import * as client from "./client";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "./reducer";
+
 export default function Profile() {
   const dispatch = useDispatch();
   const [profile, setProfile] = useState<any>({});
   const navigate = useNavigate();
+
   const fetchProfile = async () => {
     try {
       const account = await client.profile();
@@ -15,15 +18,29 @@ export default function Profile() {
       navigate("/Kanbas/Account/Signin");
     }
   };
+
   const signout = async () => {
     await client.signout();
     dispatch(setCurrentUser(null));
     navigate("/Kanbas/Account/Signin");
   };
 
+  const saveProfile = async () => {
+     try{
+      const updatedUser = await client.updateUser(profile._id, profile);
+      setProfile(updatedUser);
+      dispatch(setCurrentUser(updatedUser));
+      alert("Profile updated successfully!");
+     }
+     catch (err: any) {
+      navigate("/Kanbas/Account/Signin");
+    }
+  };
+
   useEffect(() => {
     fetchProfile();
   }, []);
+
   return (
     <div className="wd-profile-screen">
       <h1>Profile</h1>
@@ -81,8 +98,14 @@ export default function Profile() {
             <option value="FACULTY">Faculty</option>
           </select>
           <button
+            onClick={saveProfile}
+            className="wd-save-btn btn btn-danger w-100 mb-2"
+          >
+            Save Profile
+          </button>
+          <button
             onClick={signout}
-            className="wd-signout-btn btn btn-danger w-100"
+            className="wd-signout-btn btn btn-secondary  w-100"
           >
             Sign out
           </button>
@@ -91,3 +114,4 @@ export default function Profile() {
     </div>
   );
 }
+

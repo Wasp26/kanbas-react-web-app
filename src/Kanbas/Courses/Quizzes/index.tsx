@@ -55,6 +55,7 @@ export default function Quizzes() {
     hasTimeLimit: true,
     timeLimit: 20,
     multipleAttempt: false,
+    maxAttempts: 2,
     showCorrect: false,
     accessCode: "",
     oneQView: true,

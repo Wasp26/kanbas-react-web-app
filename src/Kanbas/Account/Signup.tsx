@@ -9,8 +9,15 @@ export default function Signup() {
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState(null);
   const signup = async () => {
+  
     try {
-      const currentUser = await client.signup(user);
+      await client.signup(user);
+     
+      const currentUser = await client.signin({
+        username: user.username,
+        password: user.password,
+      });
+
       dispatch(setCurrentUser(currentUser));
       navigate("/Kanbas/Account/Profile");
     } catch (error: any) {

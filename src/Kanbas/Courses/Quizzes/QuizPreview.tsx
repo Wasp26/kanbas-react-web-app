@@ -55,6 +55,16 @@ export default function QuizPreview({
             score += question.points;
           }
         });
+      }else if (question.type === "fill-in-blanks") {
+        const blanks = question.blanks;
+        blanks.forEach((blank: any) => {
+          const userAnswer = answer.answers.find(
+            (ans: any) => ans.id === blank.id
+          );
+          if (userAnswer && userAnswer.text.trim().toLowerCase() === blank.text.trim().toLowerCase()) {
+            score += question.points;
+          }
+        });
       }
     });
 
@@ -120,7 +130,7 @@ export default function QuizPreview({
           <h6>Questions</h6>
           <ul className="list-group">
             {questions.map((question: any, index: number) => {
-              return (
+              return (  
                 <li className="list-group-item border-none w-25">
                   <RxQuestionMarkCircled className="me-1" />
                   <Link
