@@ -167,7 +167,7 @@ export default function QuizPreview({
             <div className="col-7"></div>
             <div className="mt-3 d-flex flex-row-reverse">
               <button
-                className="btn btn-danger m-2"
+                className="btn px-5 py-2 btn-danger "
                 onClick={submitQuizHandler}
               >
                 SUBMIT

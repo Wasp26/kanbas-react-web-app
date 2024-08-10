@@ -61,15 +61,15 @@ export default function QuizQuestion({
 
       <h3>{question.title}</h3>
       <div
-        className="border border-dark mb-4"
-        // style={{ minHeight: "35vh", maxHeight: "35vh" }}
+        className="overflow-scroll border border-dark mb-4 rounded-3"
+         style={{ minHeight: "35vh", maxHeight: "35vh" }}
       >
-        <div className="d-flex p-3 justify-content-between bg-secondary border-bottom border-dark">
+        <div className="d-flex p-3 rounded-top-3 justify-content-between bg-secondary border-bottom border-dark">
           <div>
             <h3> Question {currentIndex + 1}</h3>
           </div>
           <div>
-            <h5 className="mt-2">{question.points + " Points"}</h5>
+            <h5 className="mt-2">{question.points + " pts"}</h5>
           </div>
         </div>
         <div className="p-3 mt-2 border-bottom mb-4">{question.question}</div>

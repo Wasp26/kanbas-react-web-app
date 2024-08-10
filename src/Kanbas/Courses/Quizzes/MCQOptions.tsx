@@ -45,7 +45,7 @@ console.log(currentAnswer)
   return (
     <div className="ms-3 mb-3 me-3">
       {choices.map((choice: any) => (
-        <div  className={`form-check mb-1 ${choice.isCorrect ? 'text-success' : ''}`}
+        <div  className={`form-check mb-1`}
         key={choice.id}>
           <input
             type="radio"

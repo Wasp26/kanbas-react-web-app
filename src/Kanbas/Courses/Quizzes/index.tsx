@@ -57,7 +57,7 @@ export default function Quizzes() {
     hasTimeLimit: true,
     timeLimit: 20,
     multipleAttempt: false,
-    maxAttempts: 1,
+    maxAttempts: 2,
     showCorrect: false,
     answersDisplayedAt: "IMMEDIATELY",
     accessCode: "",

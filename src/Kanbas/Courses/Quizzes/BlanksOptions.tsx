@@ -98,6 +98,7 @@ export default function BlanksOptions({
               className="form-blank-input mb-3 ms-3 p-2"
               onChange={onChangeHandler}
               disabled={viewAnswer}
+              placeholder="Entere your answers..."
             />
           </div>
           <div
