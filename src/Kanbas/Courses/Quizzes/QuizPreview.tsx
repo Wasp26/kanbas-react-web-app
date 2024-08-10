@@ -16,10 +16,16 @@ import ScoreDisplay from "./ScoreDisplay";
 
 export default function QuizPreview({
   quizDetails,
-  fetchQuizDetails,
+  attempts,
+  setAttempts,
+  attemptDetails,
+  setAttemptDetails,
 }: {
   quizDetails: any;
-  fetchQuizDetails: (qzid: string) => void;
+  attempts: any[];
+  setAttempts: (attempts: any[]) => void;
+  attemptDetails: any;
+  setAttemptDetails: (attemptDetails: any) => void;
 }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -30,16 +36,10 @@ export default function QuizPreview({
   const [currentQuestionIndex, setCurrentIndex] = useState(0);
   const questions = quizDetails.questions;
 
-  const [attemptDetails, setAttemptDetails] = useState({
-    quizId: qzid,
-    courseId: cid,
-    userId: currentUser._id,
-    attemptNo: 0,
-    answers: [],
-  });
-
-  const submitQuizHandler = () => {
+  const { state } = useLocation();
+  const submitQuizHandler = async () => {
     const givenAnswers = attemptDetails.answers;
+    const questions = quizDetails.questions;
     let score = 0;
     givenAnswers.map((answer: any) => {
       const question = questions.find(
@@ -55,21 +55,41 @@ export default function QuizPreview({
             score += question.points;
           }
         });
-      }else if (question.type === "fill-in-blanks") {
-        const blanks = question.blanks;
-        blanks.forEach((blank: any) => {
-          const userAnswer = answer.answers.find(
-            (ans: any) => ans.id === blank.id
+      } else {
+        const givenAnswers = answer.answer;
+        let allCorrect = true;
+        givenAnswers.map((givenAnswer: any) => {
+          const blank = question.blanks.find(
+            (blank: any) => blank.id === parseInt(givenAnswer.blankId)
           );
-          if (userAnswer && userAnswer.text.trim().toLowerCase() === blank.text.trim().toLowerCase()) {
-            score += question.points;
+          if (blank.text !== givenAnswer.answer) {
+            allCorrect = false;
+            // score += question.points;
           }
         });
+        if (allCorrect) {
+          score += question.points;
+        }
       }
     });
 
-    console.log(score);
-    submitAttempt();
+    setAttemptDetails({
+      ...attemptDetails,
+      attemptNo: attemptDetails.attemptNo + 1,
+      score: score,
+    });
+
+    if (attemptDetails.attemptNo === 0) {
+      submitAttempt({
+        ...attemptDetails,
+        score: score,
+      });
+    } else {
+      updateAttempt({
+        ...attemptDetails,
+        score: score,
+      });
+    }
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Results`);
   };
 
@@ -79,15 +99,26 @@ export default function QuizPreview({
       cid as string,
       qzid as string
     );
+    console.log(attempt);
     if (attempt) {
-      console.log(attempt);
       setAttemptDetails(attempt);
+      if (!isStaff && attempt.attemptNo === quizDetails.maxAttempts) {
+        navigate(`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Results`);
+      }
     }
   };
 
-  const submitAttempt = async () => {
+  const submitAttempt = async (thisAttempt: any) => {
     const attempt = await client.recordAttempt({
-      ...attemptDetails,
+      ...thisAttempt,
+      attemptNo: attemptDetails.attemptNo + 1,
+    });
+    setAttemptDetails(attempt);
+  };
+
+  const updateAttempt = async (thisAttempt: any) => {
+    const attempt = await client.updateAttempt({
+      ...thisAttempt,
       attemptNo: attemptDetails.attemptNo + 1,
     });
   };
@@ -101,10 +132,12 @@ export default function QuizPreview({
       <Routes>
         <Route
           path="/"
-          element={<Navigate to={`Question/${questions[0].id}`} />}
+          element={
+            <Navigate to={`Question/${questions[0].id}`} state={state} />
+          }
         ></Route>
         <Route
-          path="Question/:qid"
+          path="Question/:qid/*"
           element={
             <QuizQuestion 
               quizDetails={quizDetails}
@@ -113,20 +146,35 @@ export default function QuizPreview({
               setAttemptDetails={setAttemptDetails}
               currentQuestionIndex={currentQuestionIndex}
               setCurrentIndex={setCurrentIndex}
+              state={state}
             />
           }
         />
-        <Route path="Results" element={<ScoreDisplay />} />
+        <Route
+          path="Results"
+          element={
+            <ScoreDisplay
+              quizDetails={quizDetails}
+              attemptDetails={attemptDetails}
+              setAttemptDetails={setAttemptDetails}
+            />
+          }
+        />
       </Routes>
-
-      {!pathname.includes("Results") && (
+      {(!pathname.includes("Results") && (state ? !state.viewAnswer : true) && (
         <div>
           <div className="row mb-4">
             <div className="col-7"></div>
-            <div className="mt-3 border border-dark rounded-2 d-flex flex-row-reverse">
-        <button className="btn btn-danger m-2" onClick={submitQuizHandler}>SUBMIT</button>
-      </div>
+            <div className="mt-3 d-flex flex-row-reverse">
+              <button
+                className="btn btn-danger m-2"
+                onClick={submitQuizHandler}
+              >
+                SUBMIT
+              </button>
+            </div>
           </div>
+          <hr />
           <h6>Questions</h6>
           <ul className="list-group">
             {questions.map((question: any, index: number) => {
@@ -135,16 +183,25 @@ export default function QuizPreview({
                   <RxQuestionMarkCircled className="me-1" />
                   <Link
                     to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Question/${question.id}`}
+                    state={state}
                     className="text-decoration-none text-danger"
                   >
-                   Question {index + 1}
+                    Question {index + 1}
                   </Link>
                 </li>
               );
             })}
           </ul>
         </div>
-      )}
+      )) ||
+        (state && state.viewAnswer && (
+          <Link
+            to={`/Kanbas/Courses/${cid}/Quizzes/`}
+            className="text-decoration-none mt-3 float-end"
+          >
+            <button className="btn btn-lg btn-danger">Home</button>
+          </Link>
+        ))}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { useLocation, useNavigate, useParams } from "react-router";
 import TFOptions from "./TFOptions";
 import MCQOptions from "./MCQOptions";
 import { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ export default function QuizQuestion({
   setAttemptDetails,
   currentQuestionIndex,
   setCurrentIndex,
+  state,
 }: {
   quizDetails: any;
   questions: any[];
@@ -18,6 +19,7 @@ export default function QuizQuestion({
   setAttemptDetails: (attempt: any) => void;
   currentQuestionIndex: number;
   setCurrentIndex: (index: number) => void;
+  state: any;
 }) {
   const { qid } = useParams();
   const navigate = useNavigate();
@@ -36,7 +38,7 @@ export default function QuizQuestion({
   const handleNextQuestion = () => {
     if (currentIndex < questions.length - 1) {
       const nextQuestionId = questions[currentIndex + 1].id;
-      navigate(`../Question/${nextQuestionId}`);
+      navigate(`../Question/${nextQuestionId}`, { state });
     }
   };
 
@@ -46,24 +48,28 @@ export default function QuizQuestion({
   const handlePrevQuestion = () => {
     if (currentIndex > 0) {
       const prevQuestionId = questions[currentIndex - 1].id;
-      navigate(`../Question/${prevQuestionId}`);
+      navigate(`../Question/${prevQuestionId}`, { state });
     }
   };
 
   return (
     <div>
-      <h1 className="mb-3">{quizDetails.title}</h1>
-      <h2>{question.title}</h2>
+      <h2 className="mb-3">{quizDetails.title}</h2>
+
+      <h5>{quizDetails.description}</h5>
+      <hr />
+
+      <h3>{question.title}</h3>
       <div
-        className="border border-dark mb-4 overflow-scroll"
-        style={{ minHeight: "35vh", maxHeight: "35vh" }}
+        className="border border-dark mb-4"
+        // style={{ minHeight: "35vh", maxHeight: "35vh" }}
       >
         <div className="d-flex p-3 justify-content-between bg-secondary border-bottom border-dark">
           <div>
             <h3> Question {currentIndex + 1}</h3>
           </div>
           <div>
-            <h5 className="mt-2">{question.points} pts</h5>
+            <h5 className="mt-2">{question.points + " Points"}</h5>
           </div>
         </div>
         <div className="p-3 mt-2 border-bottom mb-4">{question.question}</div>
@@ -73,6 +79,7 @@ export default function QuizQuestion({
             attemptDetails={attemptDetails}
             setAttemptDetails={setAttemptDetails}
             currentAnswer={currentAnswer}
+            state={state}
           />
         )) ||
           (question.type === "multiple-choice" && (
@@ -81,6 +88,7 @@ export default function QuizQuestion({
               attemptDetails={attemptDetails}
               setAttemptDetails={setAttemptDetails}
               currentAnswer={currentAnswer}
+              state={state}
             />
           )) ||
           (question.type === "fill-in-blanks" && (
@@ -88,6 +96,8 @@ export default function QuizQuestion({
               question={question}
               attemptDetails={attemptDetails}
               setAttemptDetails={setAttemptDetails}
+              currentAnswer={currentAnswer}
+              state={state}
             />
           ))}
       </div>
