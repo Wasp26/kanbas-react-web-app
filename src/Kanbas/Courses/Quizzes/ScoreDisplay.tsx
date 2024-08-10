@@ -28,10 +28,18 @@ export default function ScoreDisplay({
   };
 
   return (
-    <div>
+    <div className="d-flex justify-content-center mt-5 p-5">
+      <div className="text-center">
       <h5>
-        You Scored {latestScore}/{quizDetails.points} points in your last
-        Attempt
+        You scored: 
+        <div>
+           <h2>
+             <label className=" p-3 my-3 ms-5 me-3 rounded-3 bg-secondary text-dark">{latestScore}</label>
+             <label style={{fontSize: "50px"}}>/</label><label className="bg-danger text-light p-3 m-3 rounded-3">{quizDetails.points}</label>
+             pts
+             </h2>
+          </div> in your last
+        attempt
       </h5>
       {(isStaff ||
         (quizDetails.showCorrect &&
@@ -56,6 +64,8 @@ export default function ScoreDisplay({
             View Answers and Forfeit Attempts
           </button>
         )}
+        <br />
+        <br />
       {isStaff ||
         (quizDetails.multipleAttempt &&
           quizDetails.maxAttempts > attemptDetails.attemptNo && (
@@ -63,6 +73,8 @@ export default function ScoreDisplay({
               <button className="btn btn-secondary">Re-take quiz</button>
             </Link>
           ))}
-    </div>
+
+      </div>
+         </div>
   );
 }
