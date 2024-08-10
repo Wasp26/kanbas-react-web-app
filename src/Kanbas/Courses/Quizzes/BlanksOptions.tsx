@@ -20,9 +20,13 @@ export default function BlanksOptions({
             <input type="text"
             id={blank.id}
             name = "answer"
-            className="form-blank-input mb-3 ms-3 p-2"
+            className="form-blank-input ms-3 p-2"
             />
+
+<span className={`ms-5 ${blank ? 'd-inline text-success' : 'd-none'}`}>Correct: {blank.text}</span>
+<hr />
             </div>
+            
         ))}
         </div>
     )

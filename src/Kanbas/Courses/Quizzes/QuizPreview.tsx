@@ -106,7 +106,7 @@ export default function QuizPreview({
         <Route
           path="Question/:qid"
           element={
-            <QuizQuestion
+            <QuizQuestion 
               quizDetails={quizDetails}
               questions={questions}
               attemptDetails={attemptDetails}
@@ -121,7 +121,7 @@ export default function QuizPreview({
 
       {!pathname.includes("Results") && (
         <div>
-          <div className="row mb-5">
+          <div className="row mb-4">
             <div className="col-7"></div>
             <div className="mt-3 border border-dark rounded-2 d-flex flex-row-reverse">
         <button className="btn btn-danger m-2" onClick={submitQuizHandler}>SUBMIT</button>

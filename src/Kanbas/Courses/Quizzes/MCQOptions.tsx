@@ -53,6 +53,7 @@ console.log(currentAnswer)
             onClick={handleClick}
             checked={parseInt(prevAnswerValue) === choice.id}
           />
+         
           <label htmlFor={choice.id} className="form-check-label">
             {choice.text}
           </label>

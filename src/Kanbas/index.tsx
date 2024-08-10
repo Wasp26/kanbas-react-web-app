@@ -88,7 +88,7 @@ export default function Kanbas() {
               />
               <Route path="/Account/*" element={<Account />} />
               <Route
-                path="Dashboard"
+                path="Dashboard"  
                 element={
                   <ProtectedRoute>
                     <Dashboard

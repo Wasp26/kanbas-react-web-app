@@ -19,10 +19,8 @@ export default function QuizQuestion({
   currentQuestionIndex: number;
   setCurrentIndex: (index: number) => void;
 }) {
-
-
-  const { qid } = useParams();  
-  const navigate = useNavigate();  
+  const { qid } = useParams();
+  const navigate = useNavigate();
   const [question, setQuestion] = useState(() => {
     return questions.find((q: any) => q.id === qid) || {};
   });
@@ -38,7 +36,7 @@ export default function QuizQuestion({
   const handleNextQuestion = () => {
     if (currentIndex < questions.length - 1) {
       const nextQuestionId = questions[currentIndex + 1].id;
-     navigate(`../Question/${nextQuestionId}`);
+      navigate(`../Question/${nextQuestionId}`);
     }
   };
 
@@ -55,13 +53,18 @@ export default function QuizQuestion({
   return (
     <div>
       <h1 className="mb-3">{quizDetails.title}</h1>
-      <h1>{question.title}</h1>
-      <div className="border border-dark mb-4 overflow-scroll" style={{minHeight: "35vh", maxHeight: "35vh"}}>
+      <h2>{question.title}</h2>
+      <div
+        className="border border-dark mb-4 overflow-scroll"
+        style={{ minHeight: "35vh", maxHeight: "35vh" }}
+      >
         <div className="d-flex p-3 justify-content-between bg-secondary border-bottom border-dark">
           <div>
-          <h3> Question {currentIndex +1}</h3>
+            <h3> Question {currentIndex + 1}</h3>
           </div>
-          <div><h5 className="mt-2">{question.points}</h5></div>
+          <div>
+            <h5 className="mt-2">{question.points} pts</h5>
+          </div>
         </div>
         <div className="p-3 mt-2 border-bottom mb-4">{question.question}</div>
         {(question.type === "true-false" && (
@@ -71,7 +74,6 @@ export default function QuizQuestion({
             setAttemptDetails={setAttemptDetails}
             currentAnswer={currentAnswer}
           />
-        
         )) ||
           (question.type === "multiple-choice" && (
             <MCQOptions
@@ -80,18 +82,24 @@ export default function QuizQuestion({
               setAttemptDetails={setAttemptDetails}
               currentAnswer={currentAnswer}
             />
-            
           )) ||
-          (question.type === "fill-in-blanks" &&(
+          (question.type === "fill-in-blanks" && (
             <BlanksOptions
-            question={question}
-            attemptDetails={attemptDetails}
-            setAttemptDetails={setAttemptDetails} />
-          ))
-          }
+              question={question}
+              attemptDetails={attemptDetails}
+              setAttemptDetails={setAttemptDetails}
+            />
+          ))}
       </div>
-      <button className="btn btn-secondary" onClick={handlePrevQuestion}>PREV</button>
-      <button className="btn btn-secondary float-end" onClick={handleNextQuestion}>NEXT</button>
+      <button className="btn px-4 btn-secondary" onClick={handlePrevQuestion}>
+        PREV
+      </button>
+      <button
+        className="btn btn-secondary px-4 float-end"
+        onClick={handleNextQuestion}
+      >
+        NEXT
+      </button>
     </div>
   );
 }

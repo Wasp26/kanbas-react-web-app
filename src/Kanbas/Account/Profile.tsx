@@ -1,4 +1,3 @@
-
 import * as client from "./client";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -26,13 +25,12 @@ export default function Profile() {
   };
 
   const saveProfile = async () => {
-     try{
+    try {
       const updatedUser = await client.updateUser(profile._id, profile);
       setProfile(updatedUser);
       dispatch(setCurrentUser(updatedUser));
       alert("Profile updated successfully!");
-     }
-     catch (err: any) {
+    } catch (err: any) {
       navigate("/Kanbas/Account/Signin");
     }
   };
@@ -114,4 +112,3 @@ export default function Profile() {
     </div>
   );
 }
-
