@@ -3,13 +3,16 @@ export default function MCQOptions({
   attemptDetails,
   setAttemptDetails,
   currentAnswer,
+  state,
 }: {
   question: any;
   attemptDetails: any;
   setAttemptDetails: (attempt: any) => void;
   currentAnswer: any;
+  state: any;
 }) {
   const prevAnswerValue = currentAnswer ? currentAnswer.answer : "";
+  const viewAnswer = state ? state.viewAnswer : false;
   const choices = question.choices;
   const handleClick = (event: any) => {
     const currentAnswer = event.target.id;
@@ -33,7 +36,6 @@ export default function MCQOptions({
       updatedAnswers = [...allAnswers, newAnswer];
     }
 
-    console.log(updatedAnswers);
     setAttemptDetails({
       ...attemptDetails,
       answers: updatedAnswers,
@@ -51,8 +53,17 @@ export default function MCQOptions({
             className="form-check-input mb-1"
             onClick={handleClick}
             checked={parseInt(prevAnswerValue) === choice.id}
+            disabled={viewAnswer}
           />
-          <label htmlFor={choice.id} className="form-check-label">
+          <label
+            htmlFor={choice.id}
+            className={`${
+              viewAnswer &&
+              ((choice.isCorrect && "text-success fw-bold") ||
+                (parseInt(prevAnswerValue) === choice.id &&
+                  "text-danger font-weight-bold"))
+            }`}
+          >
             {choice.text}
           </label>
           <hr />

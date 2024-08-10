@@ -55,3 +55,18 @@ export const fetchAttempt = async (
   );
   return data;
 };
+
+export const updateAttempt = async (attempt: any) => {
+  const { data } = await axios.put(
+    `${QUIZ_ATTEMPTS_API}/${attempt._id}`,
+    attempt
+  );
+  return data;
+};
+
+export const fetchAllAttempts = async (userId: string, courseId: string) => {
+  const { data } = await axios.get(
+    `${QUIZ_ATTEMPTS_API}/user/${userId}/${courseId}`
+  );
+  return data;
+};

@@ -5,13 +5,18 @@ export default function TFOptions({
   attemptDetails,
   setAttemptDetails,
   currentAnswer,
+  state,
 }: {
   question: any;
   attemptDetails: any;
   setAttemptDetails: (attempt: any) => void;
   currentAnswer: any;
+  state: any;
 }) {
   const prevAnswerValue = currentAnswer ? currentAnswer.answer : "";
+  const viewAnswer = state ? state.viewAnswer : false;
+
+  const correctAnswer = `${question.answer}`;
 
   const handleClick = (event: any) => {
     const cAnswer = event.currentTarget.value;
@@ -39,7 +44,6 @@ export default function TFOptions({
       ];
     }
 
-    console.log(updatedAnswers);
     setAttemptDetails({
       ...attemptDetails,
       answers: updatedAnswers,
@@ -57,8 +61,16 @@ export default function TFOptions({
           value="true"
           onClick={handleClick}
           checked={prevAnswerValue === "true"}
+          disabled={viewAnswer}
         />
-        <label htmlFor="trueOption" className="form-check-label">
+        <label
+          htmlFor="trueOption"
+          className={`form-check-label ${
+            viewAnswer &&
+            ((correctAnswer == "true" && "text-success fw-bold") ||
+              (prevAnswerValue === "true" && "text-danger fw-bold"))
+          }`}
+        >
           True
         </label>
       </div>
@@ -72,8 +84,16 @@ export default function TFOptions({
           value="false"
           onClick={handleClick}
           checked={prevAnswerValue === "false"}
+          disabled={viewAnswer}
         />
-        <label htmlFor="falseOption" className="form-check-label">
+        <label
+          htmlFor="falseOption"
+          className={` ${
+            viewAnswer &&
+            ((correctAnswer == "false" && "text-success fw-bold") ||
+              (prevAnswerValue === "false" && "text-danger fw-bold"))
+          }`}
+        >
           False
         </label>
       </div>

@@ -4,18 +4,46 @@ import { useParams } from "react-router";
 import "./styles.css";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { current } from "@reduxjs/toolkit";
 export default function QuizDetails({
   quizDetails,
   fetchQuizDetails,
+  attempts,
+  setAttempts,
+  attemptDetails,
+  setAttemptDetails,
 }: {
   quizDetails: any;
   fetchQuizDetails: (qzid: string) => void;
+  attempts: any[];
+  setAttempts: (attempts: any[]) => void;
+  attemptDetails: any;
+  setAttemptDetails: (attemptDetails: any) => void;
 }) {
   const { cid, qzid } = useParams();
-  const { isStaff } = useSelector((state: any) => state.accountReducer);
+  const { currentUser, isStaff } = useSelector(
+    (state: any) => state.accountReducer
+  );
+
+  const findAttemptForQuiz = () => {
+    const attempt = attempts.find((attempt) => attempt.quizId === qzid);
+    if (attempt) {
+      setAttemptDetails(attempt);
+    } else {
+      setAttemptDetails({
+        quizId: qzid,
+        courseId: cid,
+        userId: currentUser._id,
+        attemptNo: 0,
+        score: 0,
+        answers: [],
+      });
+    }
+  };
 
   useEffect(() => {
     fetchQuizDetails(qzid as string);
+    findAttemptForQuiz();
   }, []);
 
   return (
@@ -36,9 +64,20 @@ export default function QuizDetails({
           </div>
         )) || (
           <div className="col-md-4">
-            <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/`}>
-              <button className="btn btn-danger me-3">Take Quiz</button>
-            </Link>
+            {attemptDetails.attemptNo < quizDetails.maxAttempts && (
+              <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/`}>
+                <button className="btn btn-danger me-3">Take Quiz</button>
+              </Link>
+            )}
+            {attemptDetails.attemptNo > 0 && (
+              <Link
+                to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/Results`}
+              >
+                <button className="btn btn-secondary">
+                  View Latest Results
+                </button>
+              </Link>
+            )}
           </div>
         )}
       </div>

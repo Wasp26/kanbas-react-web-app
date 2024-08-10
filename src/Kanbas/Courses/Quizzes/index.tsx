@@ -10,7 +10,9 @@ import QuizPreview from "./QuizPreview";
 
 export default function Quizzes() {
   const { cid } = useParams();
-  const { isStaff } = useSelector((state: any) => state.accountReducer);
+  const { currentUser, isStaff } = useSelector(
+    (state: any) => state.accountReducer
+  );
   const { quizzes } = useSelector((state: any) => state.quizzesReducer);
   const dispatch = useDispatch();
   const dateToday = new Date();
@@ -55,7 +57,9 @@ export default function Quizzes() {
     hasTimeLimit: true,
     timeLimit: 20,
     multipleAttempt: false,
+    maxAttempts: 1,
     showCorrect: false,
+    answersDisplayedAt: "IMMEDIATELY",
     accessCode: "",
     oneQView: true,
     webcamReq: false,
@@ -67,6 +71,8 @@ export default function Quizzes() {
   };
 
   const [quizDetails, setQuizDetails] = useState<any>(defaultQuiz);
+
+  const [attempts, setAttempts] = useState<any>([]);
 
   const resetQuizDetails = () => {
     setQuizDetails(defaultQuiz);
@@ -93,6 +99,23 @@ export default function Quizzes() {
     });
   };
 
+  const [attemptDetails, setAttemptDetails] = useState({
+    quizId: "",
+    courseId: cid,
+    userId: currentUser._id,
+    attemptNo: 0,
+    score: 0,
+    answers: [],
+  });
+
+  const fetchAllAttemptDetails = async () => {
+    const attempts = await client.fetchAllAttempts(
+      currentUser._id,
+      quizDetails._id
+    );
+    setAttempts(attempts);
+  };
+
   return (
     <div id="wd-quizzes">
       <Routes>
@@ -102,12 +125,14 @@ export default function Quizzes() {
             <QuizList
               isStaff={isStaff}
               quizzes={quizzes}
+              attempts={attempts}
               fetchAllQuizzes={fetchAllQuizzes}
               updateQuizDetails={updateQuizDetails}
               deleteQuizDetails={deleteQuizDetails}
               filterQuizzesByName={filterQuizzesByName}
               quizDetails={quizDetails}
               resetQuizDetails={resetQuizDetails}
+              fetchAllAttemptDetails={fetchAllAttemptDetails}
             />
           }
         />
@@ -129,6 +154,10 @@ export default function Quizzes() {
             <QuizDetails
               quizDetails={quizDetails}
               fetchQuizDetails={fetchQuizDetails}
+              attempts={attempts}
+              setAttempts={setAttempts}
+              attemptDetails={attemptDetails}
+              setAttemptDetails={setAttemptDetails}
             />
           }
         />
@@ -137,7 +166,10 @@ export default function Quizzes() {
           element={
             <QuizPreview
               quizDetails={quizDetails}
-              fetchQuizDetails={fetchQuizDetails}
+              attempts={attempts}
+              setAttempts={setAttempts}
+              attemptDetails={attemptDetails}
+              setAttemptDetails={setAttemptDetails}
             />
           }
         />

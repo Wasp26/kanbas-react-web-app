@@ -15,20 +15,24 @@ export default function QuizList({
   isStaff,
   quizzes,
   quizDetails,
+  attempts,
   fetchAllQuizzes,
   updateQuizDetails,
   deleteQuizDetails,
   filterQuizzesByName,
   resetQuizDetails,
+  fetchAllAttemptDetails,
 }: {
   isStaff: Boolean;
   quizzes: any;
   quizDetails: any;
+  attempts: any[];
   fetchAllQuizzes: () => void;
   updateQuizDetails: (quiz: any) => void;
   deleteQuizDetails: (quizId: string) => void;
   filterQuizzesByName: (name: string) => void;
   resetQuizDetails: () => void;
+  fetchAllAttemptDetails: () => void;
 }) {
   const { cid } = useParams();
   const dateToday = new Date();
@@ -36,9 +40,16 @@ export default function QuizList({
   useEffect(() => {
     fetchAllQuizzes();
     resetQuizDetails();
+    fetchAllAttemptDetails();
   }, []);
   const questions = quizDetails.questions || [];
   const totalQuestions = questions.length;
+
+  const quizAttempted = (quizId: string) => {
+    const attempt = attempts.find((attempt) => attempt.quizId === quizId);
+    return attempt;
+  };
+
   return (
     <div id="wd-quizzes">
       {isStaff && (
@@ -119,7 +130,10 @@ export default function QuizList({
                         </span>{" "}
                         | {quiz.points}
                         {" Pt(s)"} | {quiz.numQuestions}
-                        {" Question(s)"}
+                        {" Question(s)"}{" "}
+                        {!isStaff && quizAttempted(quiz._id) && (
+                          <span>| Score: {quizAttempted(quiz._id).score}</span>
+                        )}
                       </div>
                     </div>
                     {isStaff && (
