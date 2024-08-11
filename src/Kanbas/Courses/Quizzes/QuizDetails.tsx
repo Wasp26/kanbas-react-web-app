@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { CiEdit } from "react-icons/ci";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import "./styles.css";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -21,6 +21,7 @@ export default function QuizDetails({
   setAttemptDetails: (attemptDetails: any) => void;
 }) {
   const { cid, qzid } = useParams();
+  const navigate = useNavigate();
   const { currentUser, isStaff } = useSelector(
     (state: any) => state.accountReducer
   );
@@ -41,8 +42,15 @@ export default function QuizDetails({
     }
   };
 
+  const takeQuizHandler = () => {
+    setAttemptDetails({
+      ...attemptDetails,
+      answers: [],
+    });
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt`);
+  };
 
-  useEffect(() => { 
+  useEffect(() => {
     fetchQuizDetails(qzid as string);
     findAttemptForQuiz();
   }, [quizDetails, qzid]);
@@ -53,7 +61,12 @@ export default function QuizDetails({
         {(isStaff && (
           <div className="col-md-4">
             <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/`}>
-              <button className="btn btn-secondary me-3">Preview</button>
+              <button
+                className="btn btn-secondary me-3"
+                onClick={takeQuizHandler}
+              >
+                Preview
+              </button>
             </Link>
 
             <Link to={`/Kanbas/Courses/${cid}/Quizzes/Editor/${qzid}`}>
@@ -66,9 +79,12 @@ export default function QuizDetails({
         )) || (
           <div className="col-md-4">
             {attemptDetails.attemptNo < quizDetails.maxAttempts && (
-              <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/`}>
-                <button className="btn btn-danger me-3">Take Quiz</button>
-              </Link>
+              <button className="btn btn-danger me-3" onClick={takeQuizHandler}>
+                Take Quiz
+              </button>
+              // <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Attempt/`}>
+
+              // </Link>
             )}
             {attemptDetails.attemptNo > 0 && (
               <Link
@@ -146,6 +162,34 @@ export default function QuizDetails({
               <p>{quizDetails.multipleAttempt ? "Yes" : "No"}</p>
             </div>
           </div>
+          {quizDetails.multipleAttempt && (
+            <div className="row align-self-right">
+              <div className="col-5">
+                <b>Maximum Attempts</b>
+              </div>
+              <div className="col-7">
+                <p>{quizDetails.maxAttempts}</p>
+              </div>
+            </div>
+          )}
+          <div className="row align-self-right">
+            <div className="col-5">
+              <b>Show Correct Answers</b>
+            </div>
+            <div className="col-7">
+              <p>{quizDetails.showCorrect ? "Yes" : "No"}</p>
+            </div>
+          </div>
+          {quizDetails.accessCode.length > 0 && (
+            <div className="row align-self-right">
+              <div className="col-5">
+                <b>Access Code</b>
+              </div>
+              <div className="col-7">
+                <p>{quizDetails.accessCode}</p>
+              </div>
+            </div>
+          )}
           <div className="row align-self-right">
             <div className="col-5">
               <b>One Question At a Time</b>
@@ -172,7 +216,27 @@ export default function QuizDetails({
           </div>
         </div>
       </div>
-      <table className="table">
+
+      <div id="wd-quiz-date-details-section" className="mt-3 row">
+        <div className="col-3">
+          <b className="ps-1">Due Date</b>
+          <p>{quizDetails.dueDate.split("T")[0]}</p>
+        </div>
+        <div className="col-3">
+          <b className="ps-3">For</b>
+          <p>Everyone</p>
+        </div>
+        <div className="col-3">
+          <b>Available From</b>
+          <p className="ps-3">{quizDetails.availableFrom.split("T")[0]}</p>
+        </div>
+        <div className="col-3">
+          <b>Available Until</b>
+          <p className="ps-3">{quizDetails.availableUntil.split("T")[0]}</p>
+        </div>
+      </div>
+
+      {/* <table className="table">
         <tr>
           <th scope="col">
             <b>Due</b>
@@ -193,7 +257,7 @@ export default function QuizDetails({
           <td>{quizDetails.availableFrom.split("T")[0]}</td>
           <td>{quizDetails.availableUntil.split("T")[0]}</td>
         </tr>
-      </table>
+      </table> */}
     </div>
   );
   // ) <div>QuizDetails</div>;

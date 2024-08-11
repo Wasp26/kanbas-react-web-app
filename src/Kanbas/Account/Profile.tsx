@@ -97,13 +97,13 @@ export default function Profile() {
           </select>
           <button
             onClick={saveProfile}
-            className="wd-save-btn btn btn-danger w-100 mb-2"
+            className="wd-save-btn btn btn-secondary w-100 mb-2"
           >
             Save Profile
           </button>
           <button
             onClick={signout}
-            className="wd-signout-btn btn btn-secondary  w-100"
+            className="wd-signout-btn btn btn-danger   w-100"
           >
             Sign out
           </button>

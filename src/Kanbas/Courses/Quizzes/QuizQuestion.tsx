@@ -61,8 +61,8 @@ export default function QuizQuestion({
 
       <h3>{question.title}</h3>
       <div
-        className="overflow-scroll border border-dark mb-4 rounded-3"
-         style={{ minHeight: "35vh", maxHeight: "35vh" }}
+        className=" border border-dark mb-4 rounded-3"
+        //  style={{ minHeight: "35vh", maxHeight: "35vh" }}
       >
         <div className="d-flex p-3 rounded-top-3 justify-content-between bg-secondary border-bottom border-dark">
           <div>

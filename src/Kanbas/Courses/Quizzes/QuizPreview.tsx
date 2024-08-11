@@ -44,7 +44,6 @@ export default function QuizPreview({
     // console.log("Questions:", questions);
     // console.log("Given Answers:", givenAnswers);
 
-
     givenAnswers.map((answer: any) => {
       const question = questions.find(
         (question: any) => question.id === answer.qid
@@ -54,7 +53,7 @@ export default function QuizPreview({
 
       // if (!question) {
       //   console.warn(`Question with id ${answer.qid} not found`);
-      //   return; 
+      //   return;
       // }
 
       if (question.type === "true-false") {
@@ -111,7 +110,7 @@ export default function QuizPreview({
       cid as string,
       qzid as string
     );
-  
+
     if (attempt) {
       setAttemptDetails(attempt);
       if (!isStaff && attempt.attemptNo === quizDetails.maxAttempts) {
@@ -135,25 +134,28 @@ export default function QuizPreview({
     });
   };
 
-  useEffect(() => {
-    fetchAttemptDetails();
-  }, []);
+  // useEffect(() => {
+  //   fetchAttemptDetails();
+  // }, []);
 
-const handleNoQuestion = () =>{
-  navigate(`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Details`);
-}
+  const handleNoQuestion = () => {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Details`);
+  };
 
   if (questions.length === 0) {
     return (
       <div className="alert alert-danger">
-        There are no questions to preview. Please add questions or return to the quiz details.
+        There are no questions to preview. Please add questions or return to the
+        quiz details.
         <br />
         <br />
-        <button className="btn btn-danger" onClick={handleNoQuestion}>GO BACK</button>
+        <button className="btn btn-danger" onClick={handleNoQuestion}>
+          GO BACK
+        </button>
       </div>
     );
   }
-  
+
   return (
     <div id="wd-quiz-questions" className="clearfix">
       <Routes>
@@ -166,7 +168,7 @@ const handleNoQuestion = () =>{
         <Route
           path="Question/:qid/*"
           element={
-            <QuizQuestion 
+            <QuizQuestion
               quizDetails={quizDetails}
               questions={questions}
               attemptDetails={attemptDetails}
@@ -205,7 +207,7 @@ const handleNoQuestion = () =>{
           <h6>Questions</h6>
           <ul className="list-group">
             {questions.map((question: any, index: number) => {
-              return (  
+              return (
                 <li className="list-group-item border-none w-25">
                   <RxQuestionMarkCircled className="me-1" />
                   <Link
