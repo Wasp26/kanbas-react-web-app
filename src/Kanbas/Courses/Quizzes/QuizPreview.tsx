@@ -99,7 +99,7 @@ export default function QuizPreview({
       cid as string,
       qzid as string
     );
-    console.log(attempt);
+  
     if (attempt) {
       setAttemptDetails(attempt);
       if (!isStaff && attempt.attemptNo === quizDetails.maxAttempts) {
@@ -127,6 +127,21 @@ export default function QuizPreview({
     fetchAttemptDetails();
   }, []);
 
+const handleNoQuestion = () =>{
+  navigate(`/Kanbas/Courses/${cid}/Quizzes/${qzid}/Details`);
+}
+
+  if (questions.length === 0) {
+    return (
+      <div className="alert alert-danger">
+        There are no questions to preview. Please add questions or return to the quiz details.
+        <br />
+        <br />
+        <button className="btn btn-danger" onClick={handleNoQuestion}>GO BACK</button>
+      </div>
+    );
+  }
+  
   return (
     <div id="wd-quiz-questions" className="clearfix">
       <Routes>

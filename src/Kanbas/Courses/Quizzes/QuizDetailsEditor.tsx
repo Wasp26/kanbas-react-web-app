@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { BtnBold, BtnBulletList, BtnClearFormatting, BtnItalic, BtnLink, BtnNumberedList, BtnRedo, BtnStrikeThrough, BtnStyles, BtnUnderline, BtnUndo, Editor, EditorProvider, HtmlButton, Separator, Toolbar } from 'react-simple-wysiwyg';
 export default function QuizDetailsEditor({
@@ -7,6 +8,17 @@ export default function QuizDetailsEditor({
   quizDetails: any;
   setQuizDetails: (quiz: any) => void;
 }) {
+
+  const questions = quizDetails.questions || [];
+  const totalPoints = questions.reduce(
+    (sum: number, question: any) => sum + question.points,
+    0
+  );
+
+  useEffect(() => {
+    setQuizDetails({ ...quizDetails, points: totalPoints });
+  }, [questions, quizDetails, setQuizDetails, totalPoints]);
+  
   return (
     <div id="wd-quiz-details-editor ms-5">
       <input
@@ -23,7 +35,7 @@ export default function QuizDetailsEditor({
         <Editor
         id="wd-quiz-description"
             value={quizDetails.description}
-            onChange={(e) => setQuizDetails({...quizDetails,description: e.target.value.toString().replace(/<br\s*\/?>/gi, '') })}
+            onChange={(e) => setQuizDetails({...quizDetails,description: e.target.value})}
           >
                <Toolbar>
                 <BtnUndo />
@@ -98,6 +110,7 @@ export default function QuizDetailsEditor({
         <input
           type="text"
           className="col form-control w-50"
+          value={quizDetails.accessCode}
           onChange={(e) =>
             setQuizDetails({ ...quizDetails, accessCode: e.target.value })
           }

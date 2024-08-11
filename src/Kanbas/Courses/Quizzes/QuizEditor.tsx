@@ -46,6 +46,7 @@ export default function QuizEditor({
     0
   );
 
+
   const saveAndPublishHandler = async (e: any) => {
     if (isCreate) {
       qzid = await createQuizDetails(true);

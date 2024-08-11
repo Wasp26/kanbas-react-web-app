@@ -43,7 +43,6 @@ export default function QuizList({
     fetchAllAttemptDetails();
   }, []);
   const questions = quizDetails.questions || [];
-  const totalQuestions = questions.length;
 
   const quizAttempted = (quizId: string) => {
     const attempt = attempts.find((attempt) => attempt.quizId === quizId);
