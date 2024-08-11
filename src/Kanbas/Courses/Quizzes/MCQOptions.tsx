@@ -41,7 +41,6 @@ export default function MCQOptions({
       answers: updatedAnswers,
     });
   };
-console.log(currentAnswer)
   return (
     <div className="ms-3 mb-3 me-3">
       {choices.map((choice: any) => (

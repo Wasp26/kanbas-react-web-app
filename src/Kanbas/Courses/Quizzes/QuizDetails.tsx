@@ -41,7 +41,8 @@ export default function QuizDetails({
     }
   };
 
-  useEffect(() => {
+
+  useEffect(() => { 
     fetchQuizDetails(qzid as string);
     findAttemptForQuiz();
   }, [quizDetails, qzid]);
@@ -111,7 +112,7 @@ export default function QuizDetails({
           </div>
           <div className="row align-self-right">
             <div className="col-5">
-              < b>Assignment Group</b>
+              <b>Assignment Group</b>
             </div>
             <div className="col-7">
               <p>{quizDetails.group}</p>

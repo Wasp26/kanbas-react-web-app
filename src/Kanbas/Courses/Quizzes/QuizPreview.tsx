@@ -34,17 +34,29 @@ export default function QuizPreview({
     (state: any) => state.accountReducer
   );
   const [currentQuestionIndex, setCurrentIndex] = useState(0);
-  const questions = quizDetails.questions;
+  const questions = quizDetails.questions || [];
 
   const { state } = useLocation();
   const submitQuizHandler = async () => {
     const givenAnswers = attemptDetails.answers;
-    const questions = quizDetails.questions;
     let score = 0;
+
+    // console.log("Questions:", questions);
+    // console.log("Given Answers:", givenAnswers);
+
+
     givenAnswers.map((answer: any) => {
       const question = questions.find(
         (question: any) => question.id === answer.qid
       );
+
+      // console.log(`Question for answer ${answer.qid}:`, question);
+
+      // if (!question) {
+      //   console.warn(`Question with id ${answer.qid} not found`);
+      //   return; 
+      // }
+
       if (question.type === "true-false") {
         if (`${question.answer}` === answer.answer) {
           score += question.points;
