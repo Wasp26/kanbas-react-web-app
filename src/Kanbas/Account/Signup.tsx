@@ -89,7 +89,7 @@ export default function Signup() {
           <option value="TA">Teaching Assistant</option>
           <option value="FACULTY">Faculty</option>
         </select>
-        <button type="submit" className="wd-signup-btn btn btn-primary mb-2">
+        <button type="submit" className="wd-signup-btn btn btn-danger mb-2">
           Sign up
         </button>
         <br />

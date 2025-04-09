@@ -10,7 +10,7 @@ export default function AccountNavigation() {
         <Link
           to={`/Kanbas/Account/${link}`}
           className={`wd-link border border-0 list-group-item
-           ${pathname.includes(link) ? "active text-black" : "text-danger"}`}
+           ${pathname.includes(link) ? "active bg-danger text-white" : "text-danger"}`}
         >
           {" "}
           {link}{" "}

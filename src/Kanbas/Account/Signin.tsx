@@ -21,7 +21,7 @@ export default function Signin() {
     }
   };
   return (
-    <div id="wd-signin-screen">
+    <div id="wd-signin-screen" style={{maxWidth: '600px'}}>
       <h1>Sign in</h1>
       {error && <div className="wd-error alert alert-danger">{error}</div>}
       <input
@@ -52,7 +52,7 @@ export default function Signin() {
         Sign in{" "}
       </button>
       <br />
-      <Link id="wd-signup-link" to="/Kanbas/Account/Signup">
+      <Link id="wd-signup-link" to="/Kanbas/Account/Signup" className="text-decoration-none text-secondary">
         Sign up
       </Link>
     </div>
