@@ -46,7 +46,7 @@ export default function Signin() {
       <button
         id="wd-signin-btn"
         onClick={signin}
-        className="btn btn-primary w-100"
+        className="btn btn-danger w-100"
       >
         {" "}
         Sign in{" "}
